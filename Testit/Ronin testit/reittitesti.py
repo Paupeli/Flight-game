@@ -12,7 +12,7 @@ route_length = int(input("Give the desired length of the route in numbers: "))
 country_list = []
 airport_list = []
 def lentokentan_valitsin():
-    numero = random.randint(1, 100000)
+    numero = random.randint(1, 5000)
     sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {numero} and airport.type = 'large_airport';"
     kursori = yhteys.cursor()
     kursori.execute(sql)
