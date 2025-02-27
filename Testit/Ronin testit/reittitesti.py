@@ -7,7 +7,7 @@ yhteys = mysql.connector.connect(
     password='j33s',
     autocommit=True,
 )
-#Valmiina: Lentokentän valitseminen
+#Valmiina: Lentokentän valitseminen,
 #Tarvitsee vielä mukaillun tietokannan ja loopin lentokentän määrien valitsemiseksi.
 #Tarvitsee myös tiedon reitin pituudesta, mutta näiden pitäisi olla helppoja koodata.
 #Pyrin hoitamaan loput tästä valmiiksi ennen ensi viikkoa.
@@ -15,17 +15,20 @@ import random
 
 
 def lentokentan_valitsin():
-    sql = f"select name, iso_country from airport where id={random.randint(1,10000)};"
+    numero = random.randint(1, 100000)
+    sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {numero} and airport.type = 'large_airport';"
     kursori = yhteys.cursor()
     kursori.execute(sql)
     tulos = kursori.fetchall()
     while kursori.rowcount == 0:
+        numero = random.randint(1, 100000)
+        sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {numero} and airport.type = 'large_airport';"
         kursori = yhteys.cursor()
         kursori.execute(sql)
         tulos = kursori.fetchall()
     else:
         for rivi in tulos:
-            print(rivi[0], rivi[1])
+            print(f"The airport is {rivi[0]} in the country of {rivi[1]}")
     return
 lentokentan_valitsin()
 
