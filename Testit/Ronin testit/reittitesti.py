@@ -10,6 +10,7 @@ yhteys = mysql.connector.connect(
 import random
 route_length = int(input("Give the desired length of the route in numbers: "))
 country_list = []
+airport_list = []
 def lentokentan_valitsin():
     numero = random.randint(1, 100000)
     sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {numero} and airport.type = 'large_airport';"
@@ -17,16 +18,18 @@ def lentokentan_valitsin():
     kursori.execute(sql)
     tulos = kursori.fetchall()
     while kursori.rowcount == 0:
-        numero = random.randint(1, 100000)
+        numero = random.randint(1, 5000)
         sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {numero} and airport.type = 'large_airport';"
         kursori = yhteys.cursor()
         kursori.execute(sql)
         tulos = kursori.fetchall()
     else:
         for rivi in tulos:
+            airport_list.append(rivi[0])
             country_list.append(rivi[1])
     return
 while route_length > len(country_list):
     lentokentan_valitsin()
 else: print(country_list)
+print(airport_list)
 
