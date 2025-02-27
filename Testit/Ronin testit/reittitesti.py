@@ -7,7 +7,6 @@ yhteys = mysql.connector.connect(
     password='j33s',
     autocommit=True,
 )
-
 import random
 route_length = int(input("Give the desired length of the route in numbers: "))
 country_list = []
