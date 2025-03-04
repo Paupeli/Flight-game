@@ -56,6 +56,7 @@ def country_selector_for_questions():
             if row[1] not in country_list and row[1] not in wrong_country_list:
                 wrong_country_list.append(row[1])
     return
+total_points = 0
 def question_sheet_creator():
     global total_points
     while True:
@@ -86,12 +87,14 @@ def question_sheet_creator():
     elif country3 == C:
         correct_answer_position = 'C'
     answer = input("Give your answer as A, B or C ").upper()
+    points = 0
     if answer == correct_answer_position:
         print("Correct!")
         done_country_list.append(country3)
     else:
         print("Incorrect!")
-    return
+    total_points = total_points + points
+    return points
 
 while route_length > len(country_list):
     route_creator()
@@ -104,6 +107,7 @@ count = 0
 while count < route_length:
     question_sheet_creator()
     count = count + 1
-
+else:
+    print(f"You got {total_points} points")
 
 
