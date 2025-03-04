@@ -6,7 +6,7 @@ yhteys = mysql.connector.connect(
     user='keltanokat',
     password='lentopeli',
     autocommit=True,
-    #remember to add collation here if you are not on linux!
+    #collation='utf8mb3_general_ci'
 )
 import random
 route_length = int(input("Give the desired length of the route in numbers (max 20): "))
