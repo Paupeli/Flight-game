@@ -55,8 +55,9 @@ def country_selector_for_questions():
             if row[1] not in country_list and row[1] not in wrong_country_list:
                 wrong_country_list.append(row[1])
     return
-
+total_points = 0
 def question_sheet_creator():
+    global total_points
     while True:
         num1 = random.randint(1, len(wrong_country_list))
         num2 = random.randint(1, len(wrong_country_list))
@@ -76,11 +77,25 @@ def question_sheet_creator():
     A = selection_list[snum1-1]
     B = selection_list[snum2-1]
     C = selection_list[snum3-1]
-    print(f"A={A}, B={B}, C={C}")
-    done_country_list.append(country1)
-    done_country_list.append(country2)
-    done_country_list.append(country3)
-    return
+    print(f"A: {A}, B: {B}, C: {C}")
+    correct_answer_position = ''
+    if country3 == A:
+        correct_answer_position = 'A'
+    elif country3 == B:
+        correct_answer_position = 'B'
+    elif country3 == C:
+        correct_answer_position = 'C'
+    answer = input("Give your answer as A, B or C ").upper()
+    points = 0
+    if answer == correct_answer_position:
+        print("Correct!")
+        done_country_list.append(country3)
+        points = points + 100
+    else:
+        print("Incorrect!")
+    total_points = total_points + points
+    return points
+
 while route_length > len(country_list):
     route_creator()
 else: print(country_list)
@@ -88,8 +103,11 @@ print(airport_list)
 while route_length * 3 > len(wrong_country_list):
     country_selector_for_questions()
 else: print(wrong_country_list)
-
 count = 0
 while count < route_length:
     question_sheet_creator()
     count = count + 1
+else:
+    print(f"You got {total_points} points")
+
+
