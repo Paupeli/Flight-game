@@ -1,5 +1,10 @@
 #
+#
+#
+#
 # !!!!! MUISTA TEHDÄ OMA BRANCH !!!!!!!! ENNEN KUIN MUOKKAAT !!!!! (ohjeet discordissa #repo)
+
+
 #
 # Pushataan tänne vain valmista (tai melkein valmista) koodia, testata voi vapaasti
 # Aluksi saattaa olla ettei mikään vielä toimi, ok tehtä "raakile"
@@ -17,7 +22,7 @@
 
 # 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
     # > Start a new game
-        # >> Valitse hahmo (huom. game.location pitää päivittää)
+        # >> Valitse hahmo (huom. game.location pitää päivittää helsingiksi)
         # >> Luo uusi hahmo
             # >>> Valitse, kuinka pitkä peli (**RONI**)
                 # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
@@ -57,7 +62,3 @@
     # Valinta:
 #           > Main menu >> kohta 1, main menu
 #           > Close game >> Lopetusruutu? > peli lopettaa toiminnan
-
-
-
-    # Pelaaja

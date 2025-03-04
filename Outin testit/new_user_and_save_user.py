@@ -11,7 +11,20 @@
 
 # ! Oletetaan, että tässä kohtaa on tietokantayhteys
 
+
+# 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
+    # > Start a new game
+        # >> Valitse hahmo (huom. game.location pitää päivittää)
+        # >> Luo uusi hahmo
+            # >>> Valitse, kuinka pitkä peli (**RONI**)
+                # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
+    # > Check scoreboard
+    # > Instructions
+    # > Close game
+
+
 import mysql.connector
+import urwid
 
 yhteys = mysql.connector.connect(
          host='127.0.0.1',
@@ -22,8 +35,15 @@ yhteys = mysql.connector.connect(
          autocommit=True
          collation='utf8mb3_general_ci'
 
+
 def main_menu():
-    selection = input("Welcome to Across Europe!\n-------------------\nDo you want to play with an existing user?").lower()
+    menu = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
+
+    print("*** Main Menu ***")
+
+
+def start_new_game():
+    selection = input("Time to go Across Europe!\n-------------------\nDo you want to play with an existing user?").lower()
     if selection == "yes":
         all_users = all_users_fetch()
         user_select = input("Which user would you like to choose?")
