@@ -7,7 +7,7 @@
 # Muista kommentoida koodiasi !!!
 
 
-# PELIN RAKENNE
+# PELIN RAKENNE (jokainen rivi on suurin piirtein "koodaustehtävä")
 
 # 0 A ) SQL-connector (yhteinen salasana)
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
@@ -29,6 +29,8 @@
     # Pelaaja aloittaa Helsingistä: Peli ilmoittaa sijainnin (grafiikka, ääni?)
 
     # Peli kysyy vihjekysymyksen (**PAULIINA**)
+     #Huom. Pelin pitää hakea maatiedot 2-vaiheen tallennetusta maa-arvonnasta ja siirtyä seuraavaan maahan listasta vasta kun tulee oikea vastaus
+
             #VÄÄRÄ VASTAUS
                 # -50 pistettä
                 # Ilmoitus väärästä vastauksesta, siirtyminen vastauksen mukaiselle kentälle
