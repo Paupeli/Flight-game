@@ -3,8 +3,8 @@ yhteys = mysql.connector.connect(
     host='127.0.0.1',
     port= 3306,
     database='flight_game',
-    user='testaaja',
-    password='j33s',
+    user='keltanokat',
+    password='lentopeli',
     autocommit=True,
     #remember to add collation here if you are not on linux!
 )
