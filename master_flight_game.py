@@ -16,14 +16,14 @@
 # 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
 
 # 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
-    # > Aloita peli
+    # > Start a new game
         # >> Valitse hahmo (huom. game.location pitää päivittää)
         # >> Luo uusi hahmo
             # >>> Valitse, kuinka pitkä peli (**RONI**)
                 # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
-    # > Katso scoreboard
-    # > Ohjeet
-    # > Lopeta peli
+    # > Check scoreboard
+    # > Instructions
+    # > Close game
 
 # 3) PELIN PERUSKULKU: LIIKKUMINEN, KYSYMYKSET JA TEHTÄVÄT
     # Pelaaja aloittaa Helsingistä: Peli ilmoittaa sijainnin (grafiikka, ääni?)
@@ -46,7 +46,17 @@
         # Ilmoitus käyttäjälle vastauksesta ja pisteistä
         # >>> Peli kysyy vihjekysymyksen uudesta kohteesta (edellinen osio)
 
+    # Pisteet tallennetaan game.current_score
+
 # 4) PELIN PÄÄTTYMINEN
+    # 3 väärää vastausta > GAME OVER -ruutu
+    # Saapuminen maaliin > FINISH LINE REACHED -ruutu
+    # Jos game.current_score > game.high_score >>> pisteet tallennetaan game.high_score
+        #Ilmoitus high scoresta?
+    # Näytetään päivitetty coreboard
+    # Valinta:
+#           > Main menu >> kohta 1, main menu
+#           > Close game >> Lopetusruutu? > peli lopettaa toiminnan
 
 
 
