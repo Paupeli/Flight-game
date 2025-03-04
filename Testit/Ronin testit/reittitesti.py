@@ -34,10 +34,6 @@ def route_creator():
                 airport_list.append(row[0])
                 country_list.append(row[1])
     return
-while route_length > len(country_list):
-    route_creator()
-else: print(country_list)
-print(airport_list)
 
 wrong_country_list = []
 def country_selector_for_questions():
@@ -57,9 +53,6 @@ def country_selector_for_questions():
             if row[1] not in country_list:
                 wrong_country_list.append(row[1])
     return
-while route_length * 3 > len(wrong_country_list):
-    country_selector_for_questions()
-else: print(wrong_country_list)
 
 def question_sheet_creator():
     num1 = random.randint(1, len(wrong_country_list))
@@ -81,4 +74,11 @@ def question_sheet_creator():
         C = selection_list[snum3-1]
         print(f"A={A}, B={B}, C={C}")
     return
+while route_length > len(country_list):
+    route_creator()
+else: print(country_list)
+print(airport_list)
+while route_length * 3 > len(wrong_country_list):
+    country_selector_for_questions()
+else: print(wrong_country_list)
 question_sheet_creator()
