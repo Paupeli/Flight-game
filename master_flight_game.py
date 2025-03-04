@@ -7,7 +7,7 @@
 # Muista kommentoida koodiasi !!!
 
 
-# PELIN RAKENNE:
+# PELIN RAKENNE
 
 # 0 A ) SQL-connector (yhteinen salasana)
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
