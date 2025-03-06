@@ -135,7 +135,7 @@ def scoreboard():
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
-    print (f"\n______________________________\n{'USER':<15} | {'HIGHSCORE':<10} |\n______________________________")
+    print (f"\n______________________________\n{'USER':<15} | {'HIGHSCORE':<10} |\n_______________________________")
     for row in result:
         screen_name = row[0] if row[0] is not None else "N/A"
         score = row[1] if row[1] is not None else "N/A"
