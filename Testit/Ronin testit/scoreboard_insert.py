@@ -1,5 +1,3 @@
-from defer import return_value
-
 
 def score_board_insert():
     global total_points
