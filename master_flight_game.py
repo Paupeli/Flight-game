@@ -138,6 +138,30 @@ def question_sheet_creator():
 
     total_points = total_points + points
     return points, wrong_answers
+
+def score_board_insert():
+    global total_points
+    global screen_name
+    sql = f"select score from game where score in (select max(score) from game)'"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    for row in result:
+        if row[0] < total_points:
+            print("New High Score!")
+    sql = f"update game set points = {total_points} where user_name = '{screen_name}'"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    return
+def score_board_print():
+    sql = f"select user_name, points from game"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    for row in result:
+        print(f"Name {row[0]}, points{row[1]}")
+    return
+
 # 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
 
 # 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
@@ -202,7 +226,9 @@ elif count == route_length:
     print("Total points: " + str(total_points))
     # Jos game.current_score > game.high_score >>> pisteet tallennetaan game.high_score
         #Ilmoitus high scoresta?
-    # Näytetään päivitetty coreboard
+score_board_insert()
+    # Näytetään päivitetty scoreboard
+score_board_print()
     # Valinta:
 #           > Main menu >> kohta 1, main menu
 #           > Close game >> Lopetusruutu? > peli lopettaa toiminnan
