@@ -3,7 +3,6 @@
 #
 #
 # !!!!! MUISTA TEHDÄ OMA BRANCH !!!!!!!! ENNEN KUIN MUOKKAAT !!!!! (ohjeet discordissa #repo)
-# + MUISTA PULL > MAIN ENNEN KUN TEET BRANCHIN
 
 
 #
@@ -16,7 +15,7 @@
 # PELIN RAKENNE (jokainen rivi on suurin piirtein "koodaustehtävä")
 
 # 0 A ) SQL-connector (yhteinen salasana)
-# 0 B ) IMPORTIT TÄHÄN (import random, jne)
+# 0 B ) IMPORTIT TÄHÄN (import.random, jne)
 # 0 C ) FUNKTIOT / DEF TAITAA TULLA TÄNNE AINAKIN LOPUKSI
 
 # 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
