@@ -179,10 +179,7 @@ def score_board_print():
 
 # 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
     # > Start a new game
-screen_name = input("Enter your screen name: ")
         # >> Valitse hahmo (huom. game.location pitää päivittää helsingiksi)
-
-
         # >> Luo uusi hahmo
             # >>> Valitse, kuinka pitkä peli (**RONI**)
 
