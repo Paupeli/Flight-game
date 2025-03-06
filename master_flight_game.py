@@ -94,9 +94,20 @@ def question_sheet_creator():
         snum3 = random.randint(1, len(selection_list))
         if snum1 != snum2 and snum1 != snum3 and snum2 != snum3:
             break
+    cluelist=[]
     A = selection_list[snum1-1]
     B = selection_list[snum2-1]
     C = selection_list[snum3-1]
+    #Muokkaa SQL-komentoa kun taulukko on valmis!
+    sql = f"select municipality from airport where airport.iso_country in (select iso_country from country where name = '{country3}');"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    for row in result:
+        cluelist.append(row[0])
+    cl_num = random.randint(1, len(cluelist))
+    clue = cluelist[cl_num-1]
+    print(clue)
     print(f"A: {A}, B: {B}, C: {C}")
     correct_answer_position = ''
     if country3 == A:
@@ -125,17 +136,19 @@ def question_sheet_creator():
         print("Correct!")
         done_country_list.append(country3)
         points += 100
+        cluelist.clear()
     elif answer == country2_position:
         print("Incorrect!")
         done_country_list.append(country2)
         points -= 50
         wrong_answers += 1
+        cluelist.clear()
     elif answer == country1_position:
         print("Incorrect!")
         done_country_list.append(country1)
         points -= 50
         wrong_answers += 1
-
+        cluelist.clear()
     total_points = total_points + points
     return points, wrong_answers
 
@@ -205,6 +218,9 @@ while route_length * 3 > len(wrong_country_list):
 while count < route_length or wrong_answers < 3:
     question_sheet_creator()
     count = count + 1
+    if count == route_length:
+        print("You win")
+        print(f"Your points: {total_points}")
 
 
 
@@ -226,9 +242,9 @@ elif count == route_length:
     print("Total points: " + str(total_points))
     # Jos game.current_score > game.high_score >>> pisteet tallennetaan game.high_score
         #Ilmoitus high scoresta?
-score_board_insert()
+
     # Näytetään päivitetty scoreboard
-score_board_print()
+
     # Valinta:
 #           > Main menu >> kohta 1, main menu
 #           > Close game >> Lopetusruutu? > peli lopettaa toiminnan
