@@ -16,6 +16,8 @@
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
+from defer import return_value
+
 yhteys = mysql.connector.connect(
     host='127.0.0.1',
     port= 3306,
@@ -34,6 +36,25 @@ airport_list = []
 wrong_country_list = []
 done_country_list = []
 count = 0
+
+def user_name():
+    global screen_name
+    sql1 = f"select user_name from game where user_name = '{screen_name}'"
+    cursor = yhteys.cursor()
+    cursor.execute(sql1)
+    result = cursor.fetchall()
+    if cursor.rowcount == 0:
+        sql2 = f"insert into game (user_name) values('{screen_name}')"
+        cursor = yhteys.cursor()
+        cursor.execute(sql2)
+    return
+def move_to_start():
+    global screen_name
+    #laita sql:n #:n kohdalle Helsinki-Vantaan ID!
+    sql = f"update game set locations = (select id from airport where id = '#') where user_name = {screen_name}"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    return
 def route_creator():
     num = random.randint(1, 5000)
     sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} and airport.type = 'large_airport';"
@@ -138,9 +159,14 @@ def question_sheet_creator():
 
 # 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
     # > Start a new game
+screen_name = input("Enter your screen name: ")
         # >> Valitse hahmo (huom. game.location pitää päivittää helsingiksi)
+user_name()
+move_to_start()
+
         # >> Luo uusi hahmo
             # >>> Valitse, kuinka pitkä peli (**RONI**)
+
 route_length = int(input("Give the desired length of the route in numbers (max 20): "))
 if route_length > 20:
     print("The desired length is too long")
