@@ -24,11 +24,10 @@
 
 
 import mysql.connector
-import urwid
 
 yhteys = mysql.connector.connect(
     host='127.0.0.1',
-    port= 3306,
+    port=3306,
     database='flight_game',
     user='root',
     password='MetroHylje334',
@@ -36,95 +35,127 @@ yhteys = mysql.connector.connect(
     collation='utf8mb3_general_ci'
 
 )
-#def main_menu(menu_selection):
- #   body = [urwid.Text("Across Europe\nMain Menu"), urwid.Divider()]
-  #  for option in menu_selection:
-   #     button = urwid.Button(option)
-    #    urwid.connect_signal(button, "click", main_menu_options, user_args=(option))  #
-     #   body.append(urwid.AttrMap(button, None, focus_map="reversed"))
-    # return urwid.ListBox(urwid.SimpleFocusListWalker(body))
 
 def main_menu(menu_selection):
-    print(menu_selection)
-    option = input("Please choose an opition: ")
+    print("\n-------------------------\n")
+    main_menu_text = """▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌
+▐ ███╗   ███╗ █████╗ ██╗███╗   ██╗    ███╗   ███╗███████╗███╗   ██╗██╗   ██╗ ▌
+▐ ████╗ ████║██╔══██╗██║████╗  ██║    ████╗ ████║██╔════╝████╗  ██║██║   ██║ ▌
+▐ ██╔████╔██║███████║██║██╔██╗ ██║    ██╔████╔██║█████╗  ██╔██╗ ██║██║   ██║ ▌
+▐ ██║╚██╔╝██║██╔══██║██║██║╚██╗██║    ██║╚██╔╝██║██╔══╝  ██║╚██╗██║██║   ██║ ▌
+▐ ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║    ██║ ╚═╝ ██║███████╗██║ ╚████║╚██████╔╝ ▌
+▐ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝    ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝ ╚═════╝  ▌
+▐▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▌
+                                                                          """
+    print(main_menu_text)
+    print("-------------------------\n")
+    print(f"\n{(menu_selection)}\n") #Muotoillaan nää vielä listaksi?
+    option = input(">>> Write down your selection: ").lower()
     return option
 
+
 def main_menu_options(option):
-    if option == "New Game":
-        new_game()
-    elif option == "Scoreboard":
-        scoreboard()
-    elif option == "Instructions":
-        instructions()
-    elif option == "Quit Game":
-        quit(button)
+    global user
+    while True:
+        if option == "new game":
+            user = new_game()
+            break
+        elif option == "scoreboard":
+            scoreboard()
+            main_menu(menu_selection)
+        elif option == "instructions":
+            instructions()
+            main_menu(menu_selection)
+        elif option == "quit game":
+            quit()
+    return user
+
 
 def new_game():
-    # options = ['Old user', 'New user']
-    user = ""
-    option = input("Do you want to play as an old user or create a new user?")
-    if option == "Old user":
+        # options = ['Old user', 'New user']
+    global user
+    option = input("Do you want to play as an old user or create a new user? ").lower()
+    if option == "old user":
         user = old_user()
-    elif option == "New user":
+    elif option == "new user":
         user = new_user()
     return user
 
-    #def new_game_menu(options):
-     #   body = [urwid.Text("Please choose:"), urwid.Divider()]
-      #  for option in options:
-       ##     button = urwid.Button(option)
-         #   urwid.connect_signal(button, "click", main_menu_options, user_args=(option))
-          #  body.append(urwid.AttrMap(button, None, focus_map="reversed"))
-        #return urwid.ListBox(urwid.SimpleFocusListWalker(body))
-
-   # def new_game_menu_choice(button, option):
-    #    if option == "Old user":
-     #       old_user()
-      #  elif option == "New user":
-       #     new_user()
-        #raise urwid.ExitMainLoop()
-
 def old_user():
     def all_users_fetch():
-        sql = "'select screen_name from game'"
+        sql = "select screen_name from game;"
         kursori = yhteys.cursor()
         kursori.execute(sql)
         users = kursori.fetchall()
-        print("Excisting users:")
+        print("\nExcisting users:")
         for user in users:
             print(user)
-        return users
+        return
     users = all_users_fetch()
-    print(f"Excisting users: {users}")
-    user = input("Which user would you like to choose? ")
-    return user                                                             #!!! Tähän tallennusmekanismi !!! > score, high_score
 
-def new_user():
-    user = input("What is your username? ")
-    sql = (f"INSERT INTO game (screen_name) VALUES ('{user})'")
-        # sql = (f"INSERT INTO game (screen_name, current_score, high_score) VALUES ({user_name}, 0, 0)")
-    kursori = yhteys.cursor()
-    kursori.execute(sql)
-    print("User created.\nProceeding to the game...\n----------")
+    while True:
+        user = input("Which user would you like to choose? ")
+        sql1 = f"select screen_name from game where screen_name = '{user}';"
+        cursor = yhteys.cursor()
+        cursor.execute(sql1)
+        result = cursor.fetchall()
+        if not result:
+            print("Please select an existing user.")
+            users = all_users_fetch()
+        else:
+            break
+
+    return user  # !!! Tähän tallennusmekanismi !!! > score, high_score
+
+def new_user():                                                                                        #Pycharm väittää että on unreachable, not true
+    while True:
+        user = input("What is your username? ")
+        sql1 = f"select screen_name from game where screen_name = '{user}';"
+        cursor = yhteys.cursor()
+        cursor.execute(sql1)
+        result = cursor.fetchall()
+        if cursor.rowcount == 0:
+            cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM game;")
+            next_id = cursor.fetchone()[0]
+
+            sql = f"INSERT INTO game (id, screen_name) VALUES ({next_id}, '{user}');"
+                #entä pisteet?
+            kursori = yhteys.cursor()
+            kursori.execute(sql)
+            print("User created.\nProceeding to the game...\n----------")
+            break
+        else:
+            print("User already exists. Please type in a new username.")
+                # tähän vois jotenkin keksiä, voisko palata tonne hahmovalintaan?
     return user
 
-#def start_new_game():
- #   selection = input("Time to go Across Europe!\n-------------------\nDo you want to play with an existing user?").lower()
-  #  if selection == "yes":
-   #     all_users = all_users_fetch()
-    #    user_select = input("Which user would you like to choose?")
-     #   #SELVITÄ MITEN TÄSSÄ TALLENTUU ?
-      #  #RESET LOCATION !!! VAI ei?
 
 def scoreboard():
-    pass
+    sql = f"select screen_name, co2_consumed from game order by co2_consumed desc limit 5;"   #NYT CO2 CONSUMED !!!!! VAIHDA "SCORE"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    print (f"\n______________________________\n{'USER':<15} | {'HIGHSCORE':<10} |\n______________________________")
+    for row in result:
+        screen_name = row[0] if row[0] is not None else "N/A"
+        score = row[1] if row[1] is not None else "N/A"
+        print(f"{screen_name:<15} | {score:<10} |\n______________________________")
+    return
 
-def quit_game(button):
-    pass
+def quit_game():
+    print("-----------\nQuitting game...\n____________")
+    exit()
+
 
 def instructions():
-    pass
+    print(
+        "___________\n\n\nWelcome to Across Europe!\nThe rules are simple:\n\n 1) You start in Helsinki Vantaa Airport\n\n 2) You get a clue where you should go next"
+        "\n  - Right guess: +100 points\n  - Wrong guess: -50 points\n  - Guess wrong 3 times: game over!\n\n 3) Once you get to the correct airport, you get a task\n  - Complete the task and get +50 points!\n"
+        "  - Fail the task, shame on you, -25 points \n\n 4) Finish the game by arriving to the final airport! :)")
+    return
+
 
 menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
-run = main_menu(menu_selection)
+option = main_menu(menu_selection)
+user = main_menu_options(option)
