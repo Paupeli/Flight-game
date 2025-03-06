@@ -220,7 +220,7 @@ while count < route_length or wrong_answers < 3:
     count = count + 1
     if count == route_length:
         print("You win")
-        print(f"Your points: {total_points}")
+        print("Total points: " + str(total_points))
 
 
 
