@@ -118,7 +118,7 @@ def new_user():                                                                 
             cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM game;")
             next_id = cursor.fetchone()[0]
 
-            sql = f"INSERT INTO game (id, screen_name) VALUES ({next_id}, '{user}');"
+            sql = f"INSERT INTO game (id, screen_name, location) VALUES ({next_id}, '{user}');" #({next_id}, '{user}', EFHK) !!!!!!
                 #entä pisteet?
             kursori = yhteys.cursor()
             kursori.execute(sql)
@@ -159,3 +159,5 @@ menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
 option = main_menu(menu_selection)
 user = main_menu_options(option)
+
+# !!!! TÄSSÄ KOHTAA "USER" KÄYTTÖÖN JA PELI STARTTAA HELSINGISTÄ
