@@ -35,7 +35,10 @@ country_list = []
 airport_list = []
 wrong_country_list = []
 done_country_list = []
+cluelist = []
 count = 0
+total_points = 0
+wrong_answers = 0
 
 
 def route_creator():
@@ -73,8 +76,6 @@ def country_selector_for_questions():
             if row[1] not in country_list and row[1] not in wrong_country_list:
                 wrong_country_list.append(row[1])
     return
-total_points = 0
-wrong_answers = 0
 def question_sheet_creator():
     global total_points
     global wrong_answers
@@ -97,6 +98,15 @@ def question_sheet_creator():
     A = selection_list[snum1-1]
     B = selection_list[snum2-1]
     C = selection_list[snum3-1]
+    sql = f"select clue from clues where iso_country in (select iso_country from country where name = '{country3}'"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    for row in result:
+        cluelist.append(row[0])
+    clnum = random.randint(1, len(cluelist))
+    clue = cluelist[clnum-1]
+    print(clue)
     print(f"A: {A}, B: {B}, C: {C}")
     correct_answer_position = ''
     if country3 == A:
@@ -122,22 +132,25 @@ def question_sheet_creator():
     answer = input("Give your answer as A, B or C ").upper()
     points = 0
     if answer == correct_answer_position:
-        print("Correct!")
+        print(f"Correct, you got {100*mult} points!")
         done_country_list.append(country3)
-        points += 100
+        points += 100*mult
+        cluelist.clear()
     elif answer == country2_position:
-        print("Incorrect!")
+        print(f"Incorrect, you lost {50*mult} points!")
         done_country_list.append(country2)
-        points -= 50
+        points -= (50*mult)
         wrong_answers += 1
+        cluelist.clear()
     elif answer == country1_position:
-        print("Incorrect!")
+        print(f"Incorrect, you lost {50*mult} points!")
         done_country_list.append(country1)
-        points -= 50
+        points -= (50*mult)
         wrong_answers += 1
+        cluelist.clear()
 
     total_points = total_points + points
-    return points, wrong_answers
+    return points, wrong_answers, total_points
 
 def score_board_insert():
     global total_points
@@ -161,6 +174,22 @@ def score_board_print():
     for row in result:
         print(f"Name {row[0]}, points{row[1]}")
     return
+def length():
+    global route_length
+    while True:
+        route_length = int(input("Give the desired length of the route in numbers (5, 10, 15): "))
+        if route_length == 5 or route_length == 10 or route_length == 15:
+            break
+        else:
+            print("Please enter a valid route length")
+    global mult
+    if route_length == 5:
+        mult = 1.5
+    elif route_length == 10:
+        mult = 1
+    elif route_length == 15:
+        mult = 0.5
+    return mult, route_length
 
 # 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
 
@@ -302,10 +331,7 @@ user = main_menu_options(option)
 # ^^^^^^^^^^
 
 
-route_length = int(input("Give the desired length of the route in numbers (max 20): "))
-if route_length > 20:
-    print("The desired length is too long")
-    route_length = int(input("Give the desired length of the route in numbers (max 20): "))
+length()
                 # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
 while route_length > len(country_list):
         route_creator()
