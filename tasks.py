@@ -3,8 +3,8 @@
 #if the player chooses incorrect answer, they loose 25 points but still get a clue to the next destination
 
 
-#def ask_question(question, options, correct_answer, correct_message, wrong_message):
-    #print(question)
+#def task(iso_country, task, option_a, option_b, option_c, answer, correct_message, wrong_message):
+    #print(task)
     #for option in options:
         #print(option)
 
@@ -12,7 +12,7 @@
 
     #if user_answer.lower() == correct_answer:
         #print(correct_message)
-    #lse:
+    #else:
         #print(wrong_message)
 
 #Albania
@@ -45,50 +45,88 @@
 
 import mysql.connector
 
-#from defer import return_value
+yhteys = mysql.connector.connect(
+    host='127.0.0.1',
+    port= 3306,
+    database='flight_game',
+    user='pauliina',
+    password='tikru123!',
+    autocommit=True,
+    collation='utf8mb3_general_ci'
 
-def get_task_by_country(iso_country):
+)
+
+def get_task_from_flight_game():
     try:
-       yhteys = mysql.connector.connect(
-         host='127.0.0.1',
-         port= 3306,
-         database='flight_game',
-         user='keltanokat',
-         password='lentopeli',
-         autocommit=True,
-         collation='utf8mb3_general_ci'
+     cursor = yhteys.cursor(dictionary = True)
 
-       )
+     cursor.execute("SELECT * FROM tasks ORDER BY RAND() LIMIT 1")
 
-       cursor = yhteys.cursor()
+     result = cursor.fetchone()
 
-       query = """"
-       
-       SELECT task, option_a, option_b, option_c
-       FROM tasks
-       WHERE iso_country = %s
-       """
+     if result:
+         iso_country = result['iso_country']
+         task = result['task']
+         option_a = result['option_a']
+         option_b = result['option_b']
+         option_c = result['option_c']
+         correct_answer = result['answer']
 
-       cursor.execute(query, (iso_country,))
-       result = cursor.fetchone()
-
-       if result:
-           task, option_a, option_b, option_c = result
-           print(f"Task: {task}")
-           print(f"Options:\h{option_a}\n{option_b}\n{option_c}")
-       else:
-           print(f"No task found for country code: {iso_country}")
-
+         return {
+             "iso_country": iso_country,
+             "task": task,
+             "option_a": option_a,
+             "option_b": option_b,
+             "option_c": option_c,
+             "correct_answer": correct_answer
+         }
+     else:
+         return None
     except mysql.connector.Error as err:
-       print(f"Error: {err}")
+        print(f"Error: {err}")
     finally:
+        if cursor:
+            cursor.close()
+        if yhteys:
+            yhteys.close()
 
-         if yhteys.is_connected():
-             cursor.close()
-             yhteys.close()
+def ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, correct_message, wrong_message):
+    print(f"Task from country: {iso_country}")
+    print(task)
 
-iso_country = "AL"
-get_task_by_country(iso_country)
+    print(f"{option_a}")
+    print(f"{option_b}")
+    print(f"{option_c}")
+
+    user_answer = input("Enter your answer (a,b, or c): ").lower()
+
+    if user_answer == correct_answer.lower():
+        print(correct_message)
+    else:
+        print(wrong_message)
+
+task_data = get_task_from_flight_game()
+
+if task_data:
+    iso_country = task_data["iso_country"]
+    task = task_data["task"]
+    option_a = task_data["option_a"]
+    option_b = task_data["option_b"]
+    option_c = task_data["option_c"]
+    correct_answer = task_data["correct_answer"]
+
+    correct_message = "Correct! You get 50 points and a clue to your next destination."
+    wrong_message = "Wrong answer! You loose 25 points. Here is a clue to your next destination."
+
+    ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, correct_message, wrong_message)
+else:
+    print("No task found in the database")
+
+
+
+
+
+
 
 
        
