@@ -189,7 +189,7 @@ def question_sheet_creator():
         #printtaa siirtymän
 
     total_points = total_points + points
-    return points, wrong_answers, total_points, country3
+    return points, wrong_answers, total_points, country3, count
 
 def score_board_insert():
     global total_points
