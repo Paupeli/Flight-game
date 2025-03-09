@@ -143,6 +143,7 @@ def question_sheet_creator():
         cursor.execute(sql)
         print(f"Moving to {country3}")
         count = count + 1
+        print(f"Your points: {points}")
         task_data = get_task_from_flight_game()
 
         if task_data:
@@ -170,6 +171,7 @@ def question_sheet_creator():
         cursor = yhteys.cursor()
         cursor.execute(sql)
         print(f"Moving to {country2}")
+        print(f"Your points: {points}")
         # sql koodi siiŕtymää varten
         # printtaa siirtymän
     elif answer == country1_position:
@@ -182,6 +184,7 @@ def question_sheet_creator():
         cursor = yhteys.cursor()
         cursor.execute(sql)
         print(f"Moving to {country1}")
+        print(f"Your points: {points}")
         #sql koodi siiŕtymää varten
         #printtaa siirtymän
 
@@ -261,6 +264,7 @@ def get_task_from_flight_game():
 
 
 def ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, correct_message, wrong_message):
+    global points, mult
     print(f"Task from country: {country3}")
     print(task)
 
@@ -272,8 +276,14 @@ def ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, co
 
     if user_answer == correct_answer.lower():
         print(correct_message)
+        points = points + (50*mult)
+        print(f"You got {50*mult} points! ")
+        print(f"Your points: {points}")
     else:
         print(wrong_message)
+        points = points - (25*mult)
+        print(f"Oh no, you lost {25*mult} points! ")
+        print(f"Your points: {points}")
 # 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
 
 # 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
@@ -330,7 +340,7 @@ def new_game():                                                                 
         user = new_user()
     return user              #PALAUTTAA user-arvon AIEMMALLE FUNKTIOLLE main_menu_options
 
-def old_user():
+def old_user(): #Muutettu funktioksi
     def all_users_fetch():
         sql = "select screen_name from game;"
         kursori = yhteys.cursor()
