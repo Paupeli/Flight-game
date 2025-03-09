@@ -60,13 +60,13 @@ def route_creator():
                 country_list.append(row[1])
     return
 def country_selector_for_questions():
-    num = random.randint(1, 5000)
+    num = random.randint(1, 42)
     sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} and airport.type = 'large_airport';"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     while cursor.rowcount == 0:
-        num = random.randint(1, 5000)
+        num = random.randint(1, 42)
         sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} and airport.type = 'large_airport';"
         cursor = yhteys.cursor()
         cursor.execute(sql)
@@ -100,7 +100,7 @@ def question_sheet_creator():
     A = selection_list[snum1-1]
     B = selection_list[snum2-1]
     C = selection_list[snum3-1]
-    sql = f"select clue from clues where iso_country in (select iso_country from country where name = '{country3}'"
+    sql = f"select clue from clues where iso_country in (select iso_country from country where name = '{country3};'"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -194,19 +194,19 @@ def question_sheet_creator():
 def score_board_insert():
     global total_points
     global screen_name
-    sql = f"select score from game where score in (select max(score) from game)'"
+    sql = f"select score from game where score in (select max(score) from game);"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
         if row[0] < total_points:
             print("New High Score!")
-    sql = f"update game set points = {total_points} where user_name = '{screen_name}'"
+    sql = f"update game set points = {total_points} where user_name = '{screen_name};'"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     return
 def score_board_print():
-    sql = f"select user_name, points from game"
+    sql = f"select user_name, points from game;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -234,7 +234,7 @@ def get_task_from_flight_game():
     try:
         cursor = yhteys.cursor(dictionary=True)
 
-        cursor.execute("SELECT task, option_a, option_b, option_c, answer FROM tasks where iso_country in(select iso_country from country where name = '[country3}') ORDER BY RAND() LIMIT 1")
+        cursor.execute("SELECT task, option_a, option_b, option_c, answer FROM tasks where iso_country in(select iso_country from country where name = '[country3}') ORDER BY RAND() LIMIT 1;")
 
         result = cursor.fetchone()
 
@@ -456,12 +456,14 @@ while True:
         print("Total points: " + str(total_points))
         score_board_insert()
         score_board_print()
+        #Häviöscreeni tähän?
         break
     elif count == route_length:
         print("You completed the game")
         print("Total points: " + str(total_points))
         score_board_insert()
         score_board_print()
+        #Voittoscreeni tähän?
         break
     question_sheet_creator()
 
