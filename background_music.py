@@ -2,8 +2,7 @@
 
 from just_playback import Playback
 playback = Playback()
-playback.load_file('music-files/sample.mp3')
-
+playback.load_file('musa.mp3')
 
 playback.play()
 

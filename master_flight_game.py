@@ -14,6 +14,13 @@
 
 # PELIN RAKENNE (jokainen rivi on suurin piirtein "koodaustehtävä")
 
+#background music, plays throughout the game
+from just_playback import Playback
+playback = Playback()
+playback.load_file('musa.mp3')
+
+playback.play()
+
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
 #from defer import return_value
