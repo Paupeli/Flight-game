@@ -16,6 +16,11 @@
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
+from just_playback import Playback
+playback = Playback()
+playback.load_file('musa.mp3')
+
+playback.play()
 #from defer import return_value
 
 yhteys = mysql.connector.connect(
