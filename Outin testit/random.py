@@ -1,28 +1,3 @@
-# Tämän ohjelman tarkoituksena on
-# 1) antaa käyttäjälle mahdollisuus valita uusi tai olemassa oleva käyttäjä
-# 2) luoda uusi käyttäjä
-# 3) tallentaa uusi käyttäjä tai hakea vanhan käyttäjän tiedot
-# 4) luoda mekanismi tallentamaan käyttäjän pelidata / highscore systeemiin > scoreboardin printtaus
-
-# Mietinnän alla:
-# "Lukitut käyttäjät", joita ei voida valita mutta joilla on läsnäolo scoreboardissa? Kilpailun olon luomiseksi :)
-# Peliohjeet?
-# ****
-
-# ! Oletetaan, että tässä kohtaa on tietokantayhteys
-
-
-# 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
-    # > Start a new game
-        # >> Valitse hahmo (huom. game.location pitää päivittää)
-        # >> Luo uusi hahmo
-            # >>> Valitse, kuinka pitkä peli (**RONI**)
-                # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
-    # > Check scoreboard
-    # > Instructions
-    # > Close game
-
-
 import mysql.connector
 
 yhteys = mysql.connector.connect(
@@ -81,17 +56,18 @@ def new_game():
 
 def old_user():
     def all_users_fetch():
-        sql = "select screen_name from game;"
+        sql = f"select screen_name from game;"
         kursori = yhteys.cursor()
         kursori.execute(sql)
         users = kursori.fetchall()
         print("\nExcisting users:")
         for user in users:
             print(user)
-        return
+        return                                  #Haetaan käyttäjät
+
     users = all_users_fetch()
 
-    while True:
+    while True:                                 #Valitaan millä käyttäjällä aletaan pelata
         user = input("Which user would you like to choose? ")
         sql1 = f"select screen_name from game where screen_name = '{user}';"
         kursori = yhteys.cursor()
@@ -102,10 +78,10 @@ def old_user():
             users = all_users_fetch()
         else:
             break
+        #TÄHÄN TULEE VIELLÄ VANHAN KÄYTTÄJÄN DATAN NOLLAUS
+    return user
 
-    return user  # !!! Tähän tallennusmekanismi !!! > score, high_score
-
-def new_user():                                                                                        #Pycharm väittää että on unreachable, not true
+def new_user():
     while True:
         user = input("What is your username? ")
         kursori = yhteys.cursor()
@@ -114,12 +90,12 @@ def new_user():                                                                 
         result = kursori.fetchall()
 
         if not result:
-            new_id = "SELECT COALESCE(MAX(id), 0) + 1 FROM game;"
+            new_id = "SELECT COALESCE(MAX(id), 0) + 1 FROM game;"                                   #Tässä oma uus id pelaajille, joka on +1 edellisestä
             kursori = yhteys.cursor()
             kursori.execute(new_id)
             next_id = kursori.fetchone()[0]
 
-            sql_add = f"INSERT INTO game (id, location,screen_name, score, high_score) VALUES ('{next_id}', 'EFHK', '{user}', 0, 0);"
+            sql_add = f"INSERT INTO game (id, location,screen_name, score, high_score) VALUES ('{next_id}', 'EFHK', '{user}', 0, 0);"   #Aloituskenttä on HKI!
             kursori = yhteys.cursor()
             kursori.execute(sql_add)
             print("User created.\nProceeding to the game...\n----------")
@@ -138,7 +114,7 @@ def scoreboard():
     for row in result:
         screen_name = row[0] if row[0] is not None else "N/A"
         high_score = row[1] if row[1] is not None else "N/A"
-        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")
+        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")                        #Printtaa feikki-taulukon, älä sorki jos et näe mitä teet
     return
 
 def quit_game():
@@ -156,8 +132,7 @@ def instructions():
 
 menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
+## NÄMÄ ALLA KÄYNNISTÄÄ FUNKTIOT YLLÄ
 option = main_menu(menu_selection)
 
 user = main_menu_options(option)
-
-# !!!! TÄSSÄ KOHTAA "USER" KÄYTTÖÖN JA PELI STARTTAA HELSINGISTÄ
