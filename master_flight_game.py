@@ -268,6 +268,7 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print(f"Oh no, you lost {25*mult} points! ")
         print(f"Your points: {points}")
         print(f"Here is a clue to your next destination: ")
+
 # 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
 
 # 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
