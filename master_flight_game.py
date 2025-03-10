@@ -395,15 +395,10 @@ def get_task_from_flight_game():
             return None
     except mysql.connector.Error as err:
         print(f"Error: {err}")
-    finally:
-        if cursor:
-            cursor.close()
-        if yhteys:
-            yhteys.close()
 
 
 def ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, correct_message, wrong_message):
-    print(f"Task from country: {iso_country}")
+    print(f"Task from country: {iso_country}")  #maan pitäis vastata clue maata mut en oo varma miten se tehdään?
     print(task)
 
     print(f"{option_a}")
@@ -413,9 +408,11 @@ def ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, co
     user_answer = input("Enter your answer (a,b, or c): ").lower()
 
     if user_answer == correct_answer.lower():
-        print(correct_message)
+        points =+ 50*mult
+        print(f"{correct_message} {points}")
     else:
-        print(wrong_message)
+        points =- 25*mult
+        print(f"{wrong_message} {points}")
 
 
 task_data = get_task_from_flight_game()
@@ -428,8 +425,8 @@ if task_data:
     option_c = task_data["option_c"]
     correct_answer = task_data["correct_answer"]
 
-    correct_message = "Correct! You get 50 points and a clue to your next destination."
-    wrong_message = "Wrong answer! You loose 25 points. Here is a clue to your next destination."
+    correct_message = "Correct! You get 50 points and a clue to your next destination." #vihje seuraavaan kohteeseen pitäis saada tähän
+    wrong_message = "Wrong answer! You loose 25 points. Here is a clue to your next destination."  #ja myös tähän
 
     ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, correct_message, wrong_message)
 else:
