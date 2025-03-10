@@ -25,7 +25,7 @@ yhteys = mysql.connector.connect(
     user='keltanokat',
     password='lentopeli',
     autocommit=True,
-    #collation='utf8mb3_general_ci'
+    collation='utf8mb3_general_ci'
 
 )
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
@@ -411,8 +411,7 @@ def instructions():
 menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
 ## NÄMÄ ALLA KÄYNNISTÄÄ FUNKTIOT YLLÄ
-option = main_menu(menu_selection)
-
+option = ""
 user = main_menu_options(option)
 # ^^^^^^^^^^^^^^^^^^^^
 
