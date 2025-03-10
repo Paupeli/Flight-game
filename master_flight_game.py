@@ -462,8 +462,6 @@ while True:
 
 
 
-
-
     # Pisteet tallennetaan game.current_score
 
 # 4) PELIN PÄÄTTYMINEN
