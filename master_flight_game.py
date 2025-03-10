@@ -25,7 +25,7 @@ yhteys = mysql.connector.connect(
     user='keltanokat',
     password='lentopeli',
     autocommit=True,
-    collation='utf8mb3_general_ci'
+    #collation='utf8mb3_general_ci'
 
 )
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
@@ -188,13 +188,19 @@ def question_sheet_creator():
 def score_board_insert():
     global points
     global screen_name
-    sql = f"select score from game where score in (select max(score) from game);"
+    sql = f"select score from game where score in (select max(score) from game) order by score desc limit 1;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
         if str(row[0]) < str(points):
             print("New High Score!")
+    sql = f"select high_score from game where score in (select max(score) from game) and screen_name = '{user}' order by score desc limit 1;"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    for row in result:
+        if str(row[0]) < str(points):
             sql = f"update game set high_score = {points} where screen_name = '{user}'"
             cursor = yhteys.cursor()
             cursor.execute(sql)
@@ -203,12 +209,12 @@ def score_board_insert():
     cursor.execute(sql)
     return
 def score_board_print():
-    sql = f"select screen_name, score from game;"
+    sql = f"select screen_name, score, high_score from game order by high_score desc limit 5;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
-        print(f"Name: {row[0]}, points: {row[1]}")
+        print(f"| Name: {row[0]} | Last game's points: {row[1]} | High score: {row[2]} |")
         #jos joku voisi tehdä tästä kunnon taulukon se olisi kiva
     return
 def length():
@@ -269,11 +275,13 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
 
     if user_answer == correct_answer.lower():
         points = points + (50*mult)
+        print("Correct")
         print(f"You got {50*mult} points! ")
         print(f"Your points: {points}")
         print(f"Here is a clue to your next destination: ")
     else:
         points = points-(25*mult)
+        print("Incorrect")
         print(f"Oh no, you lost {25*mult} points! ")
         print(f"Your points: {points}")
         print(f"Here is a clue to your next destination: ")
@@ -419,7 +427,7 @@ length()
                 # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
 while route_length > len(country_list):
         route_creator()
-while route_length * 3 > len(wrong_country_list):
+while route_length * 1.5 > len(wrong_country_list):
     country_selector_for_questions()
     # > Check scoreboard
     # > Instructions
