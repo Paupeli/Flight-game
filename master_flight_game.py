@@ -16,7 +16,7 @@
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
-from defer import return_value
+#from defer import return_value
 
 yhteys = mysql.connector.connect(
     host='127.0.0.1',
@@ -60,13 +60,13 @@ def route_creator():
                 country_list.append(row[1])
     return
 def country_selector_for_questions():
-    num = random.randint(1, 42)
+    num = random.randint(1, 130)
     sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} and airport.type = 'large_airport';"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     while cursor.rowcount == 0:
-        num = random.randint(1, 42)
+        num = random.randint(1, 130)
         sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} and airport.type = 'large_airport';"
         cursor = yhteys.cursor()
         cursor.execute(sql)
@@ -100,14 +100,12 @@ def question_sheet_creator():
     A = selection_list[snum1-1]
     B = selection_list[snum2-1]
     C = selection_list[snum3-1]
-    sql = f"select clue from clues where iso_country in (select iso_country from country where name = '{country3};'"
+    sql = f"select clue from clues where iso_country in (select iso_country from country where name = '{country3}') ORDER BY RAND() LIMIT 1;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
-        cluelist.append(row[0])
-    clnum = random.randint(1, len(cluelist))
-    clue = cluelist[clnum-1]
+        clue = row [0]
     print(clue)
     print(f"A: {A}, B: {B}, C: {C}")
     correct_answer_position = ''
@@ -138,9 +136,6 @@ def question_sheet_creator():
         done_country_list.append(country3)
         points += 100*mult
         cluelist.clear()
-        sql = f"update game set location = (select ident from airport where iso_country in (select iso_country from country where name = '{country3}')) where screen_name = '{user}';"
-        cursor = yhteys.cursor()
-        cursor.execute(sql)
         print(f"Moving to {country3}")
         count = count + 1
         print(f"Your points: {points}")
@@ -167,9 +162,6 @@ def question_sheet_creator():
         points -= (50*mult)
         wrong_answers += 1
         cluelist.clear()
-        sql = f"update game set location = (select ident from airport where iso_country in (select iso_country from country where name = '{country2}')) where screen_name = '{user}';"
-        cursor = yhteys.cursor()
-        cursor.execute(sql)
         print(f"Moving to {country2}")
         print(f"Your points: {points}")
         # sql koodi siiŕtymää varten
@@ -180,9 +172,6 @@ def question_sheet_creator():
         points -= (50*mult)
         wrong_answers += 1
         cluelist.clear()
-        sql = f"update game set location = (select ident from airport where iso_country in (select iso_country from country where name = '{country1}')) where screen_name = '{user}';"
-        cursor = yhteys.cursor()
-        cursor.execute(sql)
         print(f"Moving to {country1}")
         print(f"Your points: {points}")
         #sql koodi siiŕtymää varten
@@ -201,7 +190,7 @@ def score_board_insert():
     for row in result:
         if row[0] < total_points:
             print("New High Score!")
-    sql = f"update game set points = {total_points} where user_name = '{screen_name};'"
+    sql = f"update game set points = {total_points} where user_name = '{screen_name}';"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     return
@@ -233,8 +222,8 @@ def length():
 def get_task_from_flight_game():
     try:
         cursor = yhteys.cursor(dictionary=True)
-
-        cursor.execute("SELECT task, option_a, option_b, option_c, answer FROM tasks where iso_country in(select iso_country from country where name = '[country3}') ORDER BY RAND() LIMIT 1;")
+        sql = f"SELECT task, option_a, option_b, option_c, answer FROM tasks where iso_country in(select iso_country from country where name = '{country3}') ORDER BY RAND() LIMIT 1;"
+        cursor.execute(sql)
 
         result = cursor.fetchone()
 
@@ -256,14 +245,9 @@ def get_task_from_flight_game():
             return None
     except mysql.connector.Error as err:
         print(f"Error: {err}")
-    finally:
-        if cursor:
-            cursor.close()
-        if yhteys:
-            yhteys.close()
 
 
-def ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, correct_message, wrong_message):
+def ask_task(task, option_a, option_b, option_c, correct_answer,):
     global points, mult
     print(f"Task from country: {country3}")
     print(task)
@@ -275,15 +259,15 @@ def ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, co
     user_answer = input("Enter your answer (a,b, or c): ").lower()
 
     if user_answer == correct_answer.lower():
-        print(correct_message)
-        points = points + (50*mult)
+        points =+ (50*mult)
         print(f"You got {50*mult} points! ")
         print(f"Your points: {points}")
+        print(f"Here is a clue to your next destination: ")
     else:
-        print(wrong_message)
-        points = points - (25*mult)
+        points =- (25*mult)
         print(f"Oh no, you lost {25*mult} points! ")
         print(f"Your points: {points}")
+        print(f"Here is a clue to your next destination: ")
 # 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
 
 # 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
