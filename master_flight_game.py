@@ -70,7 +70,7 @@ def start_screen():
                           `---~~\___________/------------`````
                           =  ===(_________D
                           ''')
-    start_press = input("Press any key to start")
+    start_press = input("Press ENTER to start")
     return
 
 # GAME OVER SCREEN
@@ -453,7 +453,7 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
 def pause_menu():
     global pause_option
     while True:
-        pause_menu_text = pyfiglet.figlet_format("Game Paused", font="slant")
+        pause_menu_text = pyfiglet.figlet_format("Game Paused", font="slant") #emt, tän vois muotoilun vuoks laittaa vaan kerran eli ennen while-looppia? -outi
         print(f"\n\n{pause_menu_text}")
         print(f"\nOptions:\n>Continue\n>Check scoreboard\n>Rules\n>Quit\n")
         pause_option = input("\nWhat would you like to do? >").lower()
@@ -590,8 +590,6 @@ def instructions():
 start_screen()
 
 user = main_menu()
-
-# ^^^^^^^^^^^^^^^^^^^^
 
 length()
                 # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
