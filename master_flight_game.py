@@ -18,11 +18,11 @@
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
-from just_playback import Playback
-playback = Playback()
-playback.load_file('musa.mp3')
+#from just_playback import Playback
+#playback = Playback()
+#playback.load_file('musa.mp3')
 
-playback.play()
+#playback.play()
 #from defer import return_value
 
 #pyfiglet, creates slanted text etc
@@ -206,7 +206,27 @@ def question_sheet_creator():
             done_country_list.append(country3)
             points = points + (100 * mult)
             cluelist.clear()
-            print(f"Moving to {country3}")
+            flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
+            print(flying_text)
+            print(r'''
+                                                          _
+                                            -=\`\
+                                        |\ ____\_\__
+                                      -=\c`""""""" "`)
+                                         `~~~~~/ /~~`
+                                           -==/ /
+                                             '-'
+
+                                             _  _
+                                            ( `   )_
+                                           (    )    `)
+                                         (_   (_ .  _) _)
+                                                                        _
+                                                                       (  )
+                                        _ .                         ( `  ) . )
+                                      (  _ )_                      (_, _(  ,_)_)
+                                    (_  _(_ ,)
+                                     ''')
             count = count + 1
             print(f"Your points: {points}")
             task_data = get_task_from_flight_game()
@@ -225,10 +245,16 @@ def question_sheet_creator():
                 ask_task(task, option_a, option_b, option_c, correct_answer)
             else:
                 print("No task found in the database")
-            break
             # printtaa siirtymän
             # flying to destination screen
-            print(flyingtext)
+            break
+        elif answer == country2_position or answer == country1_position:
+            print(f"Incorrect, you lost {50 * mult} points!")
+            done_country_list.append(country2)
+            points = points - (50 * mult)
+            wrong_answers += 1
+            flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
+            print(flying_text)
             print(r'''
                                               _
                                 -=\`\
@@ -248,35 +274,8 @@ def question_sheet_creator():
                           (  _ )_                      (_, _(  ,_)_)
                         (_  _(_ ,)
                          ''')
-        elif answer == country2_position or answer == country1_position:
-            print(f"Incorrect, you lost {50 * mult} points!")
-            done_country_list.append(country2)
-            points = points - (50 * mult)
-            wrong_answers += 1
-            print(f"Moving to {country2}")
             print(f"Your points: {points}")
             # printtaa siirtymän
-            flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
-            print(flyingtext)
-            print(r'''
-                                  _
-                    -=\`\
-                |\ ____\_\__
-              -=\c`""""""" "`)
-                 `~~~~~/ /~~`
-                   -==/ /
-                     '-'
-
-                     _  _
-                    ( `   )_
-                   (    )    `)
-                 (_   (_ .  _) _)
-                                                _
-                                               (  )
-                _ .                         ( `  ) . )
-              (  _ )_                      (_, _(  ,_)_)
-            (_  _(_ ,)
-             ''')
             break
 
         else:
@@ -560,10 +559,10 @@ while True:
         print("Total points: " + str(points))
         score_board_insert()
         print("Scoreboard: ")
-        scoreboard()
         game_completed_text = pyfiglet.figlet_format("Congrats!", font="slant")
         print(game_completed_text)
         print('\nYou have arrived to your final destination! Well done!\n')
+        scoreboard()
         break
     question_sheet_creator()
 
