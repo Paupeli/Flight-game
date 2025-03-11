@@ -87,6 +87,7 @@ def question_sheet_creator():
     global wrong_answers
     global country3
     global count
+    global route_length
     while True:
         num1 = random.randint(1, len(wrong_country_list))
         num2 = random.randint(1, len(wrong_country_list))
@@ -143,64 +144,67 @@ def question_sheet_creator():
     elif country1 == C:
         country1_position = 'C'
     answer = input("Give your answer as A, B or C ").upper()
-    if answer == correct_answer_position:
-        print(f"Correct, you got {100*mult} points!")
-        done_country_list.append(country3)
-        points = points+(100*mult)
-        cluelist.clear()
-        print(f"Moving to {country3}")
-        count = count + 1
-        print(f"Your points: {points}")
-        task_data = get_task_from_flight_game()
+    while True:
+        if answer == correct_answer_position:
+            print(f"Correct, you got {100 * mult} points!")
+            done_country_list.append(country3)
+            points = points + (100 * mult)
+            cluelist.clear()
+            print(f"Moving to {country3}")
+            count = count + 1
+            print(f"Your points: {points}")
+            task_data = get_task_from_flight_game()
+            if task_data:
+                task = task_data["task"]
+                option_a = task_data["option_a"]
+                option_b = task_data["option_b"]
+                option_c = task_data["option_c"]
+                correct_answer = task_data["correct_answer"]
+                if count != route_length:
+                    correct_message = f"Correct! You get {50*mult} points and a clue to your next destination."
+                    wrong_message = f"Wrong answer! You loose {25*mult} points. Here is a clue to your next destination."
+                else:
+                    correct_message = f"Correct! You get {50*mult} points"
+                    wrong_message = f"Wrong answer! You loose {25*mult} points. Here is a clue to your next destination."
 
-        if task_data:
-            task = task_data["task"]
-            option_a = task_data["option_a"]
-            option_b = task_data["option_b"]
-            option_c = task_data["option_c"]
-            correct_answer = task_data["correct_answer"]
 
-            correct_message = "Correct! You get 50 points and a clue to your next destination."
-            wrong_message = "Wrong answer! You loose 25 points. Here is a clue to your next destination."
 
-            ask_task(task, option_a, option_b, option_c, correct_answer)
+                ask_task(task, option_a, option_b, option_c, correct_answer)
+            else:
+                print("No task found in the database")
+            break
+            # sql koodi siiŕtymää varten
+            # printtaa siirtymän
+        elif answer == country2_position or answer == country1_position:
+            print(f"Incorrect, you lost {50 * mult} points!")
+            done_country_list.append(country2)
+            points = points - (50 * mult)
+            wrong_answers += 1
+            print(f"Moving to {country2}")
+            print(f"Your points: {points}")
+            # sql koodi siiŕtymää varten
+            # printtaa siirtymän
+            break
+
         else:
-            print("No task found in the database")
-        # sql koodi siiŕtymää varten
-        # printtaa siirtymän
-    elif answer == country2_position:
-        print(f"Incorrect, you lost {50*mult} points!")
-        done_country_list.append(country2)
-        points = points - (50*mult)
-        wrong_answers += 1
-        cluelist.clear()
-        print(f"Moving to {country2}")
-        print(f"Your points: {points}")
-        # sql koodi siiŕtymää varten
-        # printtaa siirtymän
-    elif answer == country1_position:
-        print(f"Incorrect, you lost {50*mult} points!")
-        done_country_list.append(country1)
-        points = points - (50*mult)
-        wrong_answers += 1
-        cluelist.clear()
-        print(f"Moving to {country1}")
-        print(f"Your points: {points}")
-        #sql koodi siiŕtymää varten
-        #printtaa siirtymän
+            print("You didn't give your answer as A, B or C")
+            answer = input("Give your answer as A, B or C ").upper()
     return points, wrong_answers, total_points, country3, count
 
 def score_board_insert():
     global points
     global screen_name
-    sql = f"select score from game where score in (select max(score) from game) order by score desc limit 1;"
+    sql = f"update game set score = {points} where screen_name = '{user}';"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    sql = f"select high_score from game where high_score in (select max(high_score) from game) order by high_score desc limit 1;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
         if str(row[0]) < str(points):
             print("New High Score!")
-    sql = f"select high_score from game where score in (select max(score) from game) and screen_name = '{user}' order by score desc limit 1;"
+    sql = f"select high_score from game where screen_name = '{user}' order by high_score desc limit 1;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -209,9 +213,7 @@ def score_board_insert():
             sql = f"update game set high_score = {points} where screen_name = '{user}'"
             cursor = yhteys.cursor()
             cursor.execute(sql)
-    sql = f"update game set score = {points} where screen_name = '{user}';"
-    cursor = yhteys.cursor()
-    cursor.execute(sql)
+            print("New personal best!")
     return
 def score_board_print():
     sql = f"select screen_name, score, high_score from game order by high_score desc limit 5;"
@@ -283,7 +285,10 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print("Correct")
         print(f"You got {50*mult} points! ")
         print(f"Your points: {points}")
-        print(f"Here is a clue to your next destination: ")
+        if count != route_length:
+            print(f"Here is a clue to your next destination: ")
+
+
     else:
         points = points-(25*mult)
         print("Incorrect")
@@ -453,7 +458,7 @@ while route_length * 1.5 > len(wrong_country_list):
             #OIKEA VASTAUS
                 # +100 pistettä
                 # Ilmoitus oikeasta vastauksesta, siirtyminen oikealle mukaiselle kentälle
-
+print("Welcome to your starting point at Helsinki-Vantaa airport! Here is a clue to your first destination: ")
 while True:
     if wrong_answers >= 3:
         print("Too many wrong answers, game over")
