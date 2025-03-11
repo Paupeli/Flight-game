@@ -309,6 +309,22 @@ def score_board_insert():
             cursor.execute(sql)
             print("New personal best!")
     return
+
+def score_board_print():
+    #TÄSSÄ MAIN MENUN VASTAAVA; onko ok? -outi
+    #def scoreboard():
+   # sql = f"select screen_name, high_score from game order by high_score desc limit 5;"
+    #cursor = yhteys.cursor()
+    #cursor.execute(sql)
+    #result = cursor.fetchall()
+    #print (f"\n______________________________\n{'USER':<15} | {'HIGH SCORE':<10} |\n_______________________________")
+    #for row in result:
+     #   screen_name = row[0] if row[0] is not None else "N/A"
+      #  high_score = row[1] if row[1] is not None else "N/A"
+       # print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")
+    #return
+    return
+
 def length():
     global route_length
     while True:
@@ -396,7 +412,28 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
 
 #HUOM! NÄMÄ OVAT FUNKTIOT, JOTKA KÄYNNISTYVÄT ALLA MAIN MENUN PÄÄKOODIN TOIMESTA (MERKITTY MISTÄ ALKAA)
 
-def main_menu(menu_selection):
+#PAUSE_MENU EI KÄYTÖSSÄ MISSÄÄN - TESTATAAN...
+def pause_menu():
+    global pause_option
+    while True:
+        pause_menu_text = pyfiglet.figlet_format("Game Paused", font="slant")
+        print(f"\n\n{pause_menu_text}")
+        print(f"\nOptions:\n>Continue\n>Check scoreboard\n>Rules\n>Main Menu\n>Quit\n")
+        pause_option = input("\nWhat would you like to do? >").lower()
+        if pause_option == "continue":
+            break
+        elif pause_option == "check scoreboard":
+            scoreboard()           #HUOM. PAUSEN AIKAINEN SCOREBOARD: Koodi on nyt kahdesti eli scoreboard() ja score_board_print() kts. ylhäällä - onko päivitetty?
+        elif pause_option == "rules":
+            instructions()
+        elif pause_option == "main menu":
+            main_menu()   #Tässä tarkistus, sekottaako pääkoodin? Tai, miten pääkoodin saa rullaamaan tän kanssa
+        elif pause_option == "quit":
+            quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
+            quit()
+    return
+
+def main_menu():
     print("\n-------------------------\n")
     main_menu_text = """▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌
 ▐ ███╗   ███╗ █████╗ ██╗███╗   ██╗    ███╗   ███╗███████╗███╗   ██╗██╗   ██╗ ▌
@@ -408,15 +445,14 @@ def main_menu(menu_selection):
 ▐▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▌
                                                                           """
     print(main_menu_text)
-    print("-------------------------\n")
-    print(f"\n{(menu_selection)}\n") #Muotoillaan nää vielä listaksi?
-    option = input(">>> Write down your selection: ").lower()
-    return option
+    global option
+    global user
 
-
-def main_menu_options(option):
-    while True:                                     #Looppaa main menuun kunnes pelaaja haluaa alottaa uuden pelin
-        option = main_menu(menu_selection)
+    while True:
+        menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']#Looppaa main menuun kunnes pelaaja haluaa alottaa uuden pelin
+        print("-------------------------\n")
+        print(f"\n{(menu_selection)}\n")
+        option = input("Please select >").lower()
         if option == "new game":
             user = new_game()
             break
@@ -441,18 +477,17 @@ def new_game():
 
 def old_user():
     def all_users_fetch():
-        sql = f"select screen_name from game;"
+        sql = "select screen_name from game;"
         kursori = yhteys.cursor()
         kursori.execute(sql)
         users = kursori.fetchall()
         print("\nExcisting users:")
         for user in users:
             print(user)
-        return                                  #Haetaan käyttäjät
-
+        return
     users = all_users_fetch()
 
-    while True:                                 #Valitaan millä käyttäjällä aletaan pelata
+    while True:
         user = input("Which user would you like to choose? ")
         sql1 = f"select screen_name from game where screen_name = '{user}';"
         kursori = yhteys.cursor()
@@ -463,10 +498,10 @@ def old_user():
             users = all_users_fetch()
         else:
             break
-        #TÄHÄN TULEE VIELLÄ VANHAN KÄYTTÄJÄN DATAN NOLLAUS
-    return user
 
-def new_user():
+    return user  # !!! Tähän tallennusmekanismi !!! > score, high_score
+
+def new_user():                                                                                        #Pycharm väittää että on unreachable, not true
     while True:
         user = input("What is your username? ")
         kursori = yhteys.cursor()
@@ -475,12 +510,12 @@ def new_user():
         result = kursori.fetchall()
 
         if not result:
-            new_id = "SELECT COALESCE(MAX(id), 0) + 1 FROM game;"                                   #Tässä oma uus id pelaajille, joka on +1 edellisestä
+            new_id = "SELECT COALESCE(MAX(id), 0) + 1 FROM game;"
             kursori = yhteys.cursor()
             kursori.execute(new_id)
             next_id = kursori.fetchone()[0]
 
-            sql_add = f"INSERT INTO game (id, location,screen_name, score, high_score) VALUES ('{next_id}', 'EFHK', '{user}', 0, 0);"   #Aloituskenttä on HKI!
+            sql_add = f"INSERT INTO game (id, location,screen_name, score, high_score) VALUES ('{next_id}', 'EFHK', '{user}', 0, 0);"
             kursori = yhteys.cursor()
             kursori.execute(sql_add)
             print("User created.\nProceeding to the game...\n----------")
@@ -499,30 +534,27 @@ def scoreboard():
     for row in result:
         screen_name = row[0] if row[0] is not None else "N/A"
         high_score = row[1] if row[1] is not None else "N/A"
-        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")                        #Printtaa feikki-taulukon, älä sorki jos et näe mitä teet
+        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")
     return
 
 def quit_game():
     print("-----------\nQuitting game...\n____________")
     exit()
 
-
 def instructions():
     print(
-        "___________\n\n\nWelcome to Across Europe!\nThe rules are simple:\n\n 1) You start in Helsinki Vantaa Airport\n\n 2) You get a clue where you should go next"
+        "___________\n\n\nWelcome to Journey Across Europe!\nThe rules are simple:\n\n 1) You start in Helsinki Vantaa Airport\n\n 2) You get a clue where you should go next"
         "\n  - Right guess: +100 points\n  - Wrong guess: -50 points\n  - Guess wrong 3 times: game over!\n\n 3) Once you get to the correct airport, you get a task\n  - Complete the task and get +50 points!\n"
         "  - Fail the task, shame on you, -25 points \n\n 4) Finish the game by arriving to the final airport! :)")
     return
-
-
-menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
 ## NÄMÄ ALLA KÄYNNISTÄÄ FUNKTIOT YLLÄ
 
 start_screen()
 
-option = ""
-user = main_menu_options(option)
+user = main_menu()
+
+
 # ^^^^^^^^^^^^^^^^^^^^
 
 length()

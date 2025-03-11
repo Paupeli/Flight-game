@@ -1,4 +1,30 @@
+# Tämän ohjelman tarkoituksena on
+# 1) antaa käyttäjälle mahdollisuus valita uusi tai olemassa oleva käyttäjä
+# 2) luoda uusi käyttäjä
+# 3) tallentaa uusi käyttäjä tai hakea vanhan käyttäjän tiedot
+# 4) luoda mekanismi tallentamaan käyttäjän pelidata / highscore systeemiin > scoreboardin printtaus
+
+# Mietinnän alla:
+# "Lukitut käyttäjät", joita ei voida valita mutta joilla on läsnäolo scoreboardissa? Kilpailun olon luomiseksi :)
+# Peliohjeet?
+# ****
+
+# ! Oletetaan, että tässä kohtaa on tietokantayhteys
+
+
+# 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
+    # > Start a new game
+        # >> Valitse hahmo (huom. game.location pitää päivittää)
+        # >> Luo uusi hahmo
+            # >>> Valitse, kuinka pitkä peli (**RONI**)
+                # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
+    # > Check scoreboard
+    # > Instructions
+    # > Close game
+
+
 import mysql.connector
+import pyfiglet
 
 yhteys = mysql.connector.connect(
     host='127.0.0.1',
@@ -11,100 +37,8 @@ yhteys = mysql.connector.connect(
 
 )
 
-def main_menu(menu_selection):
-    print("\n-------------------------\n")
-    main_menu_text = """▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌
-▐ ███╗   ███╗ █████╗ ██╗███╗   ██╗    ███╗   ███╗███████╗███╗   ██╗██╗   ██╗ ▌
-▐ ████╗ ████║██╔══██╗██║████╗  ██║    ████╗ ████║██╔════╝████╗  ██║██║   ██║ ▌
-▐ ██╔████╔██║███████║██║██╔██╗ ██║    ██╔████╔██║█████╗  ██╔██╗ ██║██║   ██║ ▌
-▐ ██║╚██╔╝██║██╔══██║██║██║╚██╗██║    ██║╚██╔╝██║██╔══╝  ██║╚██╗██║██║   ██║ ▌
-▐ ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║    ██║ ╚═╝ ██║███████╗██║ ╚████║╚██████╔╝ ▌
-▐ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝    ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝ ╚═════╝  ▌
-▐▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▌
-                                                                          """
-    print(main_menu_text)
-    print("-------------------------\n")
-    print(f"\n{(menu_selection)}\n") #Muotoillaan nää vielä listaksi?
-    option = input(">>> Write down your selection: ").lower()
-    return option
-
-
-def main_menu_options(option):
-    while True:                                     #Looppaa main menuun kunnes pelaaja haluaa alottaa uuden pelin
-        option = main_menu(menu_selection)
-        if option == "new game":
-            user = new_game()
-            break
-        elif option == "scoreboard":
-            scoreboard()
-        elif option == "instructions":
-            instructions()
-        elif option == "quit game":
-            quit()
-    return user
-
-
-def new_game():
-        # options = ['Old user', 'New user']
-    global user
-    option = input("Do you want to play as an old user or create a new user? ").lower()
-    if option == "old user":
-        user = old_user()
-    elif option == "new user":
-        user = new_user()
-    return user
-
-def old_user():
-    def all_users_fetch():
-        sql = f"select screen_name from game;"
-        kursori = yhteys.cursor()
-        kursori.execute(sql)
-        users = kursori.fetchall()
-        print("\nExcisting users:")
-        for user in users:
-            print(user)
-        return                                  #Haetaan käyttäjät
-
-    users = all_users_fetch()
-
-    while True:                                 #Valitaan millä käyttäjällä aletaan pelata
-        user = input("Which user would you like to choose? ")
-        sql1 = f"select screen_name from game where screen_name = '{user}';"
-        kursori = yhteys.cursor()
-        kursori.execute(sql1)
-        result = kursori.fetchall()
-        if not result:
-            print("Please select an existing user.")
-            users = all_users_fetch()
-        else:
-            break
-        #TÄHÄN TULEE VIELLÄ VANHAN KÄYTTÄJÄN DATAN NOLLAUS
-    return user
-
-def new_user():
-    while True:
-        user = input("What is your username? ")
-        kursori = yhteys.cursor()
-        sql_check = f"SELECT screen_name FROM game WHERE screen_name = '{user}';"
-        kursori.execute(sql_check)
-        result = kursori.fetchall()
-
-        if not result:
-            new_id = "SELECT COALESCE(MAX(id), 0) + 1 FROM game;"                                   #Tässä oma uus id pelaajille, joka on +1 edellisestä
-            kursori = yhteys.cursor()
-            kursori.execute(new_id)
-            next_id = kursori.fetchone()[0]
-
-            sql_add = f"INSERT INTO game (id, location,screen_name, score, high_score) VALUES ('{next_id}', 'EFHK', '{user}', 0, 0);"   #Aloituskenttä on HKI!
-            kursori = yhteys.cursor()
-            kursori.execute(sql_add)
-            print("User created.\nProceeding to the game...\n----------")
-            break
-        else:
-            print("User already exists. Please type in a new username.")
-    return user
-
-
+def continue_game():
+    return
 def scoreboard():
     sql = f"select screen_name, high_score from game order by high_score desc limit 5;"
     cursor = yhteys.cursor()
@@ -114,7 +48,7 @@ def scoreboard():
     for row in result:
         screen_name = row[0] if row[0] is not None else "N/A"
         high_score = row[1] if row[1] is not None else "N/A"
-        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")                        #Printtaa feikki-taulukon, älä sorki jos et näe mitä teet
+        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")
     return
 
 def quit_game():
@@ -129,10 +63,34 @@ def instructions():
         "  - Fail the task, shame on you, -25 points \n\n 4) Finish the game by arriving to the final airport! :)")
     return
 
+def quit_game():
+    print("-----------\nQuitting game...\n____________")
+    exit()
 
-menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
-## NÄMÄ ALLA KÄYNNISTÄÄ FUNKTIOT YLLÄ
-option = main_menu(menu_selection)
+def pause_menu():
+    global pause_option
+    while True:
+        pause_menu_text = pyfiglet.figlet_format("Game Paused", font="slant")
+        print(f"\n\n{pause_menu_text}")
+        print(f"\nOptions:\n>Continue\n>Check scoreboard\n>Rules\n>Main Menu\n>Quit\n")
+        pause_option = input("\nWhat would you like to do? >").lower()
+        if pause_option == "continue":
+            break
+        elif pause_option == "check scoreboard":
+            scoreboard()
+        elif pause_option == "rules":
+            instructions()
+        elif pause_option == "main Menu":
+            main_menu(menu_selection)   #Tässä tarkistus, sekottaako pääkoodin? Tai, miten pääkoodin saa rullaamaan tän kanssa
+        elif pause_option == "quit":
+            quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
+            quit()
+    return
 
-user = main_menu_options(option)
+
+pause_menu()
+
+
+
+# !!!! TÄSSÄ KOHTAA "USER" KÄYTTÖÖN JA PELI STARTTAA HELSINGISTÄ
