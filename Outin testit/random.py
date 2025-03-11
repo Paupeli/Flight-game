@@ -4,33 +4,42 @@ yhteys = mysql.connector.connect(
     host='127.0.0.1',
     port=3306,
     database='flight_game',
-    user='root',
-    password='MetroHylje334',
+    user='keltanokat',
+    password='lentopeli',
     autocommit=True,
     collation='utf8mb3_general_ci'
 
 )
 
 def main_menu(menu_selection):
-    print"\n-------------------------\n\nWELCOME TO MAIN MENU\n\n-------------------------"
-    print(f"Options:\n{(menu_selection)}")
-    option = input("\nPlease choose an opition: ")
+    print("\n-------------------------\n")
+    main_menu_text = """▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌
+▐ ███╗   ███╗ █████╗ ██╗███╗   ██╗    ███╗   ███╗███████╗███╗   ██╗██╗   ██╗ ▌
+▐ ████╗ ████║██╔══██╗██║████╗  ██║    ████╗ ████║██╔════╝████╗  ██║██║   ██║ ▌
+▐ ██╔████╔██║███████║██║██╔██╗ ██║    ██╔████╔██║█████╗  ██╔██╗ ██║██║   ██║ ▌
+▐ ██║╚██╔╝██║██╔══██║██║██║╚██╗██║    ██║╚██╔╝██║██╔══╝  ██║╚██╗██║██║   ██║ ▌
+▐ ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║    ██║ ╚═╝ ██║███████╗██║ ╚████║╚██████╔╝ ▌
+▐ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝    ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝ ╚═════╝  ▌
+▐▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▌
+                                                                          """
+    print(main_menu_text)
+    print("-------------------------\n")
+    print(f"\n{(menu_selection)}\n") #Muotoillaan nää vielä listaksi?
+    option = input(">>> Write down your selection: ").lower()
     return option
 
 
 def main_menu_options(option):
-    global user
-    while True:
-        if option == "New Game":
+    while True:                                     #Looppaa main menuun kunnes pelaaja haluaa alottaa uuden pelin
+        option = main_menu(menu_selection)
+        if option == "new game":
             user = new_game()
             break
-        elif option == "Scoreboard":
+        elif option == "scoreboard":
             scoreboard()
-            main_menu(menu_selection)
-        elif option == "Instructions":
+        elif option == "instructions":
             instructions()
-            main_menu(menu_selection)
-        elif option == "Quit Game":
+        elif option == "quit game":
             quit()
     return user
 
@@ -38,72 +47,74 @@ def main_menu_options(option):
 def new_game():
         # options = ['Old user', 'New user']
     global user
-    option = input("Do you want to play as an old user or create a new user?")
-    if option == "Old user":
+    option = input("Do you want to play as an old user or create a new user? ").lower()
+    if option == "old user":
         user = old_user()
-    elif option == "New user":
+    elif option == "new user":
         user = new_user()
     return user
 
 def old_user():
     def all_users_fetch():
-        sql = "'select screen_name from game'"
+        sql = f"select screen_name from game;"
         kursori = yhteys.cursor()
         kursori.execute(sql)
         users = kursori.fetchall()
-        print("Excisting users:")
+        print("\nExcisting users:")
         for user in users:
             print(user)
-        return users
+        return                                  #Haetaan käyttäjät
 
     users = all_users_fetch()
-    print(f"Excisting users: {users}")
 
-    while True:
+    while True:                                 #Valitaan millä käyttäjällä aletaan pelata
         user = input("Which user would you like to choose? ")
-
-        sql1 = f"select screen_name from game where screen_name = '{user};'"
-        cursor = yhteys.cursor()
-        cursor.execute(sql1)
-        result = cursor.fetchall()
-
-        if cursor.rowcount == 0:
+        sql1 = f"select screen_name from game where screen_name = '{user}';"
+        kursori = yhteys.cursor()
+        kursori.execute(sql1)
+        result = kursori.fetchall()
+        if not result:
             print("Please select an existing user.")
+            users = all_users_fetch()
         else:
             break
-
-    return user  # !!! Tähän tallennusmekanismi !!! > score, high_score
+        #TÄHÄN TULEE VIELLÄ VANHAN KÄYTTÄJÄN DATAN NOLLAUS
+    return user
 
 def new_user():
     while True:
         user = input("What is your username? ")
-        sql1 = f"select screen_name from game where screen_name = '{user}';"
-        cursor = yhteys.cursor()
-        cursor.execute(sql1)
-        result = cursor.fetchall()
-        if cursor.rowcount == 0:
-            cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM game;")
-            next_id = cursor.fetchone()[0]
+        kursori = yhteys.cursor()
+        sql_check = f"SELECT screen_name FROM game WHERE screen_name = '{user}';"
+        kursori.execute(sql_check)
+        result = kursori.fetchall()
 
-            sql = f"INSERT INTO game (id, screen_name) VALUES ({next_id}, '{user}');"
-                #entä pisteet?
+        if not result:
+            new_id = "SELECT COALESCE(MAX(id), 0) + 1 FROM game;"                                   #Tässä oma uus id pelaajille, joka on +1 edellisestä
             kursori = yhteys.cursor()
-            kursori.execute(sql)
+            kursori.execute(new_id)
+            next_id = kursori.fetchone()[0]
+
+            sql_add = f"INSERT INTO game (id, location,screen_name, score, high_score) VALUES ('{next_id}', 'EFHK', '{user}', 0, 0);"   #Aloituskenttä on HKI!
+            kursori = yhteys.cursor()
+            kursori.execute(sql_add)
             print("User created.\nProceeding to the game...\n----------")
             break
         else:
             print("User already exists. Please type in a new username.")
-                # tähän vois jotenkin keksiä, voisko palata tonne hahmovalintaan?
     return user
 
 
 def scoreboard():
-    sql = f"select screen_name, co2_consumed from game order by co2_consumed desc limit 5;"   #NYT CO2 CONSUMED !!!!! VAIHDA "SCORE"
+    sql = f"select screen_name, high_score from game order by high_score desc limit 5;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
+    print (f"\n______________________________\n{'USER':<15} | {'HIGH SCORE':<10} |\n_______________________________")
     for row in result:
-        print(f"Name: {row[0]}points{row[1]}")
+        screen_name = row[0] if row[0] is not None else "N/A"
+        high_score = row[1] if row[1] is not None else "N/A"
+        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")                        #Printtaa feikki-taulukon, älä sorki jos et näe mitä teet
     return
 
 def quit_game():
@@ -121,5 +132,7 @@ def instructions():
 
 menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
+## NÄMÄ ALLA KÄYNNISTÄÄ FUNKTIOT YLLÄ
 option = main_menu(menu_selection)
+
 user = main_menu_options(option)

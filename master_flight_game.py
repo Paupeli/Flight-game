@@ -14,9 +14,24 @@
 
 # PELIN RAKENNE (jokainen rivi on suurin piirtein "koodaustehtävä")
 
+#background music, plays throughout the game
+from just_playback import Playback
+playback = Playback()
+playback.load_file('musa.mp3')
+
+playback.play()
+
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
-from defer import return_value
+from just_playback import Playback
+playback = Playback()
+playback.load_file('musa.mp3')
+
+playback.play()
+#from defer import return_value
+
+#pyfiglet, creates slanted text etc
+import pyfiglet                             #Muista asentaa python packages, uusin versio
 
 yhteys = mysql.connector.connect(
     host='127.0.0.1',
@@ -25,7 +40,7 @@ yhteys = mysql.connector.connect(
     user='keltanokat',
     password='lentopeli',
     autocommit=True,
-    #collation='utf8mb3_general_ci'
+    collation='utf8mb3_general_ci'
 
 )
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
@@ -39,17 +54,69 @@ cluelist = []
 count = 0
 total_points = 0
 wrong_answers = 0
+points = 0
 
+# STARTING SCREEN
+def start_screen():
+    startscreen_text = pyfiglet.figlet_format("Journey Across Europe!", font = "slant"  )
+    print(startscreen_text)
+    print(r'''
+                ______
+                _\ _~-\___
+        =  = ==(____AA____D
+                    \_____\___________________,-~~~~~~~`-.._
+                    /     o O o o o o O O o o o o o o O o  |\_
+                    `~-.__        ___..----..                  )
+                          `---~~\___________/------------`````
+                          =  ===(_________D
+                          ''')
+    start_press = input("Press any key to start")
+    return
+
+# GAME OVER SCREEN
+def game_over():
+    gameover_screen_text = pyfiglet.figlet_format("Game Over!", font="slant")
+    print(gameover_screen_text)
+    print(r'''
+                     uuuuuuu
+                 uu$$$$$$$$$$$uu
+              uu$$$$$$$$$$$$$$$$$uu
+             u$$$$$$$$$$$$$$$$$$$$$u
+            u$$$$$$$$$$$$$$$$$$$$$$$u
+           u$$$$$$$$$$$$$$$$$$$$$$$$$u
+           u$$$$$$$$$$$$$$$$$$$$$$$$$u
+           u$$$$$$"   "$$$"   "$$$$$$u
+           "$$$$"      u$u       $$$$"
+            $$$u       u$u       u$$$
+            $$$u      u$$$u      u$$$
+             "$$$$uu$$$   $$$uu$$$$"
+              "$$$$$$$"   "$$$$$$$"
+                u$$$$$$$u$$$$$$$u
+                 u$"$"$"$"$"$"$u
+      uuu        $$u$ $ $ $ $u$$       uuu
+     u$$$$        $$$$$u$u$u$$$       u$$$$
+      $$$$$uu      "$$$$$$$$$"     uu$$$$$$
+    u$$$$$$$$$$$uu    """""    uuuu$$$$$$$$$$
+    $$$$"""$$$$$$$$$$uuu   uu$$$$$$$$$"""$$$"
+     """      ""$$$$$$$$$$$uu ""$"""
+               uuuu ""$$$$$$$$$$uuu
+      u$$$uuu$$$$$$$$$uu ""$$$$$$$$$$$uuu$$$
+      $$$$$$$$$$""""           ""$$$$$$$$$$$"
+       "$$$$$"                      ""$$$$""
+         $$$"                         $$$$"
+
+
+                ''')
 
 def route_creator():
-    num = random.randint(1, 5000)
-    sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} and airport.type = 'large_airport';"
+    num = random.randint(1, 261)
+    sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} order by rand();"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     while cursor.rowcount == 0:
-        num = random.randint(1, 5000)
-        sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} and airport.type = 'large_airport';"
+        num = random.randint(1, 261)
+        sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} order by rand();"
         cursor = yhteys.cursor()
         cursor.execute(sql)
         result = cursor.fetchall()
@@ -60,14 +127,14 @@ def route_creator():
                 country_list.append(row[1])
     return
 def country_selector_for_questions():
-    num = random.randint(1, 5000)
-    sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} and airport.type = 'large_airport';"
+    num = random.randint(1, 130)
+    sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} order by rand();"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     while cursor.rowcount == 0:
-        num = random.randint(1, 5000)
-        sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} and airport.type = 'large_airport';"
+        num = random.randint(1, 130)
+        sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} order by rand();"
         cursor = yhteys.cursor()
         cursor.execute(sql)
         result = cursor.fetchall()
@@ -77,8 +144,11 @@ def country_selector_for_questions():
                 wrong_country_list.append(row[1])
     return
 def question_sheet_creator():
-    global total_points
+    global points
     global wrong_answers
+    global country3
+    global count
+    global route_length
     while True:
         num1 = random.randint(1, len(wrong_country_list))
         num2 = random.randint(1, len(wrong_country_list))
@@ -98,14 +168,19 @@ def question_sheet_creator():
     A = selection_list[snum1-1]
     B = selection_list[snum2-1]
     C = selection_list[snum3-1]
-    sql = f"select clue from clues where iso_country in (select iso_country from country where name = '{country3}'"
+    sql = f"select clue from clues where iso_country in (select iso_country from country where name = '{country3}') ORDER BY RAND() LIMIT 1;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
-        cluelist.append(row[0])
-    clnum = random.randint(1, len(cluelist))
-    clue = cluelist[clnum-1]
+        clue = row [0]
+    if cursor.rowcount == 0:
+        sql = f"select clue from clues where iso_country in (select iso_country from country where name = '{country3}') ORDER BY RAND() LIMIT 1;"
+        cursor = yhteys.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        for row in result:
+            clue = row[0]
     print(clue)
     print(f"A: {A}, B: {B}, C: {C}")
     correct_answer_position = ''
@@ -130,49 +205,85 @@ def question_sheet_creator():
     elif country1 == C:
         country1_position = 'C'
     answer = input("Give your answer as A, B or C ").upper()
-    points = 0
-    if answer == correct_answer_position:
-        print(f"Correct, you got {100*mult} points!")
-        done_country_list.append(country3)
-        points += 100*mult
-        cluelist.clear()
-    elif answer == country2_position:
-        print(f"Incorrect, you lost {50*mult} points!")
-        done_country_list.append(country2)
-        points -= (50*mult)
-        wrong_answers += 1
-        cluelist.clear()
-    elif answer == country1_position:
-        print(f"Incorrect, you lost {50*mult} points!")
-        done_country_list.append(country1)
-        points -= (50*mult)
-        wrong_answers += 1
-        cluelist.clear()
+    while True:
+        if answer == correct_answer_position:
+            print(f"Correct, you got {100 * mult} points!")
+            done_country_list.append(country3)
+            points = points + (100 * mult)
+            cluelist.clear()
+            print(f"Moving to {country3}")
+            count = count + 1
+            print(f"Your points: {points}")
+            task_data = get_task_from_flight_game()
+            if task_data:
+                task = task_data["task"]
+                option_a = task_data["option_a"]
+                option_b = task_data["option_b"]
+                option_c = task_data["option_c"]
+                correct_answer = task_data["correct_answer"]
+                if count != route_length:
+                    correct_message = f"Correct! You get {50*mult} points and a clue to your next destination."
+                    wrong_message = f"Wrong answer! You loose {25*mult} points. Here is a clue to your next destination."
+                else:
+                    correct_message = f"Correct! You get {50*mult} points"
+                    wrong_message = f"Wrong answer! You loose {25*mult} points. Here is a clue to your next destination."
 
-    total_points = total_points + points
-    return points, wrong_answers, total_points
+
+
+                ask_task(task, option_a, option_b, option_c, correct_answer)
+            else:
+                print("No task found in the database")
+            break
+            # sql koodi siiŕtymää varten
+            # printtaa siirtymän
+        elif answer == country2_position or answer == country1_position:
+            print(f"Incorrect, you lost {50 * mult} points!")
+            done_country_list.append(country2)
+            points = points - (50 * mult)
+            wrong_answers += 1
+            print(f"Moving to {country2}")
+            print(f"Your points: {points}")
+            # sql koodi siiŕtymää varten
+            # printtaa siirtymän
+            break
+
+        else:
+            print("You didn't give your answer as A, B or C")
+            answer = input("Give your answer as A, B or C ").upper()
+    return points, wrong_answers, total_points, country3, count
 
 def score_board_insert():
-    global total_points
+    global points
     global screen_name
-    sql = f"select score from game where score in (select max(score) from game)'"
+    sql = f"update game set score = {points} where screen_name = '{user}';"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    sql = f"select high_score from game where high_score in (select max(high_score) from game) order by high_score desc limit 1;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
-        if row[0] < total_points:
+        if str(row[0]) < str(points):
             print("New High Score!")
-    sql = f"update game set points = {total_points} where user_name = '{screen_name}'"
+    sql = f"select high_score from game where screen_name = '{user}' order by high_score desc limit 1;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
+    result = cursor.fetchall()
+    for row in result:
+        if str(row[0]) < str(points):
+            sql = f"update game set high_score = {points} where screen_name = '{user}'"
+            cursor = yhteys.cursor()
+            cursor.execute(sql)
+            print("New personal best!")
     return
 def score_board_print():
-    sql = f"select user_name, points from game"
+    sql = f"select screen_name, score, high_score from game order by high_score desc limit 5;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
-        print(f"Name {row[0]}, points{row[1]}")
+        print(f"| Name: {row[0]} | Last game's points: {row[1]} | High score: {row[2]} |")
+        #jos joku voisi tehdä tästä kunnon taulukon se olisi kiva
     return
 def length():
     global route_length
@@ -190,6 +301,61 @@ def length():
     elif route_length == 15:
         mult = 0.5
     return mult, route_length
+
+def get_task_from_flight_game():
+    try:
+        cursor = yhteys.cursor(dictionary=True)
+        sql = f"SELECT task, option_a, option_b, option_c, answer FROM tasks where iso_country in(select iso_country from country where name = '{country3}') ORDER BY RAND() LIMIT 1;"
+        cursor.execute(sql)
+
+        result = cursor.fetchone()
+
+        if result:
+            task = result['task']
+            option_a = result['option_a']
+            option_b = result['option_b']
+            option_c = result['option_c']
+            correct_answer = result['answer']
+
+            return {
+                "task": task,
+                "option_a": option_a,
+                "option_b": option_b,
+                "option_c": option_c,
+                "correct_answer": correct_answer
+            }
+        else:
+            return None
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+
+
+def ask_task(task, option_a, option_b, option_c, correct_answer,):
+    global points, mult
+    print(f"Task from country: {country3}")
+    print(task)
+
+    print(f"{option_a}")
+    print(f"{option_b}")
+    print(f"{option_c}")
+
+    user_answer = input("Enter your answer (a,b, or c): ").lower()
+
+    if user_answer == correct_answer.lower():
+        points = points + (50*mult)
+        print("Correct")
+        print(f"You got {50*mult} points! ")
+        print(f"Your points: {points}")
+        if count != route_length:
+            print(f"Here is a clue to your next destination: ")
+
+
+    else:
+        points = points-(25*mult)
+        print("Incorrect")
+        print(f"Oh no, you lost {25*mult} points! ")
+        print(f"Your points: {points}")
+        print(f"Here is a clue to your next destination: ")
 
 # 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
 
@@ -220,24 +386,22 @@ def main_menu(menu_selection):
     return option
 
 
-def main_menu_options(option):                                                                  #TÄMÄ PALAUTTAA USERIN PELIN ALOITTAMISEKSI
-    global user
-    while True:
+def main_menu_options(option):
+    while True:                                     #Looppaa main menuun kunnes pelaaja haluaa alottaa uuden pelin
+        option = main_menu(menu_selection)
         if option == "new game":
             user = new_game()
             break
         elif option == "scoreboard":
             scoreboard()
-            main_menu(menu_selection)
         elif option == "instructions":
             instructions()
-            main_menu(menu_selection)
         elif option == "quit game":
             quit()
-    return user         # WHILE LOOP EI ETENE ENNEN KUN def new_game() PALAUTTAA user-arvon
+    return user
 
 
-def new_game():                                                                                #TÄMÄ ON VALIKKO UUDEN PELIN LUOMISEKSI
+def new_game():
         # options = ['Old user', 'New user']
     global user
     option = input("Do you want to play as an old user or create a new user? ").lower()
@@ -245,67 +409,69 @@ def new_game():                                                                 
         user = old_user()
     elif option == "new user":
         user = new_user()
-    return user              #PALAUTTAA user-arvon AIEMMALLE FUNKTIOLLE main_menu_options
+    return user
 
 def old_user():
     def all_users_fetch():
-        sql = "select screen_name from game;"
+        sql = f"select screen_name from game;"
         kursori = yhteys.cursor()
         kursori.execute(sql)
         users = kursori.fetchall()
         print("\nExcisting users:")
         for user in users:
             print(user)
-        return
-    users = all_users_fetch()                                                                   #Tämä on vähän höpö funktio, että voidaan listata olemassa olevat käyttävät old_user funktiossa
+        return                                  #Haetaan käyttäjät
 
-    while True:
+    users = all_users_fetch()
+
+    while True:                                 #Valitaan millä käyttäjällä aletaan pelata
         user = input("Which user would you like to choose? ")
         sql1 = f"select screen_name from game where screen_name = '{user}';"
-        cursor = yhteys.cursor()
-        cursor.execute(sql1)
-        result = cursor.fetchall()
-        if not result:                                                  #Tarkistaa että käyttäjä on olemassa, muute while-loop jatkuu
+        kursori = yhteys.cursor()
+        kursori.execute(sql1)
+        result = kursori.fetchall()
+        if not result:
             print("Please select an existing user.")
             users = all_users_fetch()
         else:
             break
-    # !!!! TÄHÄN VIELÄ SIJAINNIN NOLLAUS HELSINKIIN kun uusi tietokanta
+        #TÄHÄN TULEE VIELLÄ VANHAN KÄYTTÄJÄN DATAN NOLLAUS
     return user
 
-def new_user():                                                                                        #Pycharm väittää että on unreachable, not true
+def new_user():
     while True:
         user = input("What is your username? ")
-        sql1 = f"select screen_name from game where screen_name = '{user}';"
-        cursor = yhteys.cursor()
-        cursor.execute(sql1)
-        result = cursor.fetchall()
-        if cursor.rowcount == 0:
-            cursor.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM game;")
-            next_id = cursor.fetchone()[0]
+        kursori = yhteys.cursor()
+        sql_check = f"SELECT screen_name FROM game WHERE screen_name = '{user}';"
+        kursori.execute(sql_check)
+        result = kursori.fetchall()
 
-            sql = f"INSERT INTO game (id, screen_name, location) VALUES ({next_id}, '{user}');" #({next_id}, '{user}', EFHK) !!!!!!
-                #entä pisteet?
+        if not result:
+            new_id = "SELECT COALESCE(MAX(id), 0) + 1 FROM game;"                                   #Tässä oma uus id pelaajille, joka on +1 edellisestä
             kursori = yhteys.cursor()
-            kursori.execute(sql)
+            kursori.execute(new_id)
+            next_id = kursori.fetchone()[0]
+
+            sql_add = f"INSERT INTO game (id, location,screen_name, score, high_score) VALUES ('{next_id}', 'EFHK', '{user}', 0, 0);"   #Aloituskenttä on HKI!
+            kursori = yhteys.cursor()
+            kursori.execute(sql_add)
             print("User created.\nProceeding to the game...\n----------")
             break
         else:
             print("User already exists. Please type in a new username.")
-                # tähän vois jotenkin keksiä, voisko palata tonne hahmovalintaan?
     return user
 
 
 def scoreboard():
-    sql = f"select screen_name, co2_consumed from game order by co2_consumed desc limit 5;"                                 #NYT CO2 CONSUMED !!!!! VAIHDA "SCORE tms"
+    sql = f"select screen_name, high_score from game order by high_score desc limit 5;"
     cursor = yhteys.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
-    print (f"\n______________________________\n{'USER':<15} | {'HIGHSCORE':<10} |\n_______________________________")
+    print (f"\n______________________________\n{'USER':<15} | {'HIGH SCORE':<10} |\n_______________________________")
     for row in result:
         screen_name = row[0] if row[0] is not None else "N/A"
-        score = row[1] if row[1] is not None else "N/A"
-        print(f"{screen_name:<15} | {score:<10} |\n______________________________")                    #TÄMÄ PRINTTAA TAULUKON pisteistä, älä sörki muotoilua jos et näe mitä teet :D
+        high_score = row[1] if row[1] is not None else "N/A"
+        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")                        #Printtaa feikki-taulukon, älä sorki jos et näe mitä teet
     return
 
 def quit_game():
@@ -323,19 +489,19 @@ def instructions():
 
 menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
-# TÄMÄ ALLA OLEVA ON **MAIN MENUN PÄÄKOODI**, JOKA KÄYNNISTÄÄ FUNKTIOT YLLÄ!!!
+## NÄMÄ ALLA KÄYNNISTÄÄ FUNKTIOT YLLÄ
 
-option = main_menu(menu_selection)
+start_screen()
+
+option = ""
 user = main_menu_options(option)
-
-# ^^^^^^^^^^
-
+# ^^^^^^^^^^^^^^^^^^^^
 
 length()
                 # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
 while route_length > len(country_list):
         route_creator()
-while route_length * 3 > len(wrong_country_list):
+while route_length * 1.5 > len(wrong_country_list):
     country_selector_for_questions()
     # > Check scoreboard
     # > Instructions
@@ -356,10 +522,24 @@ while route_length * 3 > len(wrong_country_list):
             #OIKEA VASTAUS
                 # +100 pistettä
                 # Ilmoitus oikeasta vastauksesta, siirtyminen oikealle mukaiselle kentälle
-
-while count < route_length or wrong_answers < 3:
+print("Welcome to your starting point at Helsinki-Vantaa airport! Here is a clue to your first destination: ")
+while True:
+    if wrong_answers >= 3:
+        print("Too many wrong answers, game over")
+        print("Total points: " + str(points))
+        score_board_insert()
+        score_board_print()
+        game_over()                             #Lisäsin tämän tänne, menee gameover näkymään
+        break
+    elif count == route_length:
+        print("You completed the game")
+        print("Total points: " + str(points))
+        score_board_insert()
+        score_board_print()
+        #Voittoscreeni tähän?
+        break
     question_sheet_creator()
-    count = count + 1
+
 
 
 
@@ -367,87 +547,21 @@ while count < route_length or wrong_answers < 3:
         # Oikea vastaus +50, väärä vastaus -25
         # Ilmoitus käyttäjälle vastauksesta ja pisteistä
         # >>> Peli kysyy vihjekysymyksen uudesta kohteesta (edellinen osio)
-def get_task_from_flight_game():
-    try:
-        cursor = yhteys.cursor(dictionary=True)
-
-        cursor.execute("SELECT * FROM tasks ORDER BY RAND() LIMIT 1")
-
-        result = cursor.fetchone()
-
-        if result:
-            iso_country = result['iso_country']
-            task = result['task']
-            option_a = result['option_a']
-            option_b = result['option_b']
-            option_c = result['option_c']
-            correct_answer = result['answer']
-
-            return {
-                "iso_country": iso_country,
-                "task": task,
-                "option_a": option_a,
-                "option_b": option_b,
-                "option_c": option_c,
-                "correct_answer": correct_answer
-            }
-        else:
-            return None
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
 
 
-def ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, correct_message, wrong_message):
-    print(f"Task from country: {iso_country}")  #maan pitäis vastata clue maata mut en oo varma miten se tehdään?
-    print(task)
-
-    print(f"{option_a}")
-    print(f"{option_b}")
-    print(f"{option_c}")
-
-    user_answer = input("Enter your answer (a,b, or c): ").lower()
-
-    if user_answer == correct_answer.lower():
-        points =+ 50*mult
-        print(f"{correct_message} {points}")
-    else:
-        points =- 25*mult
-        print(f"{wrong_message} {points}")
-
-
-task_data = get_task_from_flight_game()
-
-if task_data:
-    iso_country = task_data["iso_country"]
-    task = task_data["task"]
-    option_a = task_data["option_a"]
-    option_b = task_data["option_b"]
-    option_c = task_data["option_c"]
-    correct_answer = task_data["correct_answer"]
-
-    correct_message = "Correct! You get 50 points and a clue to your next destination." #vihje seuraavaan kohteeseen pitäis saada tähän
-    wrong_message = "Wrong answer! You loose 25 points. Here is a clue to your next destination."  #ja myös tähän
-
-    ask_task(iso_country, task, option_a, option_b, option_c, correct_answer, correct_message, wrong_message)
-else:
-    print("No task found in the database")
 
     # Pisteet tallennetaan game.current_score
 
 # 4) PELIN PÄÄTTYMINEN
     # 3 väärää vastausta > GAME OVER -ruutu
-if wrong_answers == 3:
-    print("Too many wrong answers. Game over!")
-    print("Total points: " + str(total_points))
+
     # Saapuminen maaliin > FINISH LINE REACHED -ruutu
-elif count == route_length:
-    print("You win!")
-    print("Total points: " + str(total_points))
+
     # Jos game.current_score > game.high_score >>> pisteet tallennetaan game.high_score
         #Ilmoitus high scoresta?
-score_board_insert()
+
     # Näytetään päivitetty scoreboard
-score_board_print()
+
     # Valinta:
 #           > Main menu >> kohta 1, main menu
 #           > Close game >> Lopetusruutu? > peli lopettaa toiminnan
