@@ -540,8 +540,8 @@ def scoreboard():
     return
 
 def quit_game():
-    print("-----------\nQuitting game...\n____________")
-    exit()
+    quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
+    quit()
 
 def instructions():
     print(
