@@ -68,7 +68,7 @@ def start_screen():
                           `---~~\___________/------------`````
                           =  ===(_________D
                           ''')
-    start_press = input("Press any key to start")
+    start_press = input("Press ENTER key to start")
     return
 
 # GAME OVER SCREEN
