@@ -88,8 +88,9 @@ def pause_menu():
             quit()
     return
 
-
-pause_menu()
+quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
+print(quit_game_text)
+quit()
 
 
 

@@ -19,6 +19,7 @@
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
 from just_playback import Playback
+import defer
 playback = Playback()
 playback.load_file('musa.mp3')
 
@@ -430,6 +431,7 @@ def pause_menu():
             main_menu()   #Tässä tarkistus, sekottaako pääkoodin? Tai, miten pääkoodin saa rullaamaan tän kanssa
         elif pause_option == "quit":
             quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
+            print(quit_game_text)
             quit()
     return
 
@@ -538,8 +540,8 @@ def scoreboard():
     return
 
 def quit_game():
-    print("-----------\nQuitting game...\n____________")
-    exit()
+    quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
+    quit()
 
 def instructions():
     print(
@@ -553,7 +555,6 @@ def instructions():
 start_screen()
 
 user = main_menu()
-
 
 # ^^^^^^^^^^^^^^^^^^^^
 
