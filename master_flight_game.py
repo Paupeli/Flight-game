@@ -30,6 +30,9 @@ playback.load_file('musa.mp3')
 playback.play()
 #from defer import return_value
 
+#pyfiglet, creates slanted text etc
+import pyfiglet                             #Muista asentaa python packages, uusin versio
+
 yhteys = mysql.connector.connect(
     host='127.0.0.1',
     port= 3306,
@@ -37,7 +40,7 @@ yhteys = mysql.connector.connect(
     user='keltanokat',
     password='lentopeli',
     autocommit=True,
-    #collation='utf8mb3_general_ci'
+    collation='utf8mb3_general_ci'
 
 )
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
@@ -53,6 +56,57 @@ total_points = 0
 wrong_answers = 0
 points = 0
 
+# STARTING SCREEN
+def start_screen():
+    startscreen_text = pyfiglet.figlet_format("Journey Across Europe!", font = "slant"  )
+    print(startscreen_text)
+    print(r'''
+                ______
+                _\ _~-\___
+        =  = ==(____AA____D
+                    \_____\___________________,-~~~~~~~`-.._
+                    /     o O o o o o O O o o o o o o O o  |\_
+                    `~-.__        ___..----..                  )
+                          `---~~\___________/------------`````
+                          =  ===(_________D
+                          ''')
+    start_press = input("Press any key to start")
+    return
+
+# GAME OVER SCREEN
+def game_over():
+    gameover_screen_text = pyfiglet.figlet_format("Game Over!", font="slant")
+    print(gameover_screen_text)
+    print(r'''
+                     uuuuuuu
+                 uu$$$$$$$$$$$uu
+              uu$$$$$$$$$$$$$$$$$uu
+             u$$$$$$$$$$$$$$$$$$$$$u
+            u$$$$$$$$$$$$$$$$$$$$$$$u
+           u$$$$$$$$$$$$$$$$$$$$$$$$$u
+           u$$$$$$$$$$$$$$$$$$$$$$$$$u
+           u$$$$$$"   "$$$"   "$$$$$$u
+           "$$$$"      u$u       $$$$"
+            $$$u       u$u       u$$$
+            $$$u      u$$$u      u$$$
+             "$$$$uu$$$   $$$uu$$$$"
+              "$$$$$$$"   "$$$$$$$"
+                u$$$$$$$u$$$$$$$u
+                 u$"$"$"$"$"$"$u
+      uuu        $$u$ $ $ $ $u$$       uuu
+     u$$$$        $$$$$u$u$u$$$       u$$$$
+      $$$$$uu      "$$$$$$$$$"     uu$$$$$$
+    u$$$$$$$$$$$uu    """""    uuuu$$$$$$$$$$
+    $$$$"""$$$$$$$$$$uuu   uu$$$$$$$$$"""$$$"
+     """      ""$$$$$$$$$$$uu ""$"""
+               uuuu ""$$$$$$$$$$uuu
+      u$$$uuu$$$$$$$$$uu ""$$$$$$$$$$$uuu$$$
+      $$$$$$$$$$""""           ""$$$$$$$$$$$"
+       "$$$$$"                      ""$$$$""
+         $$$"                         $$$$"
+
+
+                ''')
 
 def route_creator():
     num = random.randint(1, 261)
@@ -431,6 +485,9 @@ def instructions():
 menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
 ## NÄMÄ ALLA KÄYNNISTÄÄ FUNKTIOT YLLÄ
+
+start_screen()
+
 option = ""
 user = main_menu_options(option)
 # ^^^^^^^^^^^^^^^^^^^^
@@ -467,7 +524,7 @@ while True:
         print("Total points: " + str(points))
         score_board_insert()
         score_board_print()
-        #Häviöscreeni tähän?
+        game_over()                             #Lisäsin tämän tänne, menee gameover näkymään
         break
     elif count == route_length:
         print("You completed the game")
