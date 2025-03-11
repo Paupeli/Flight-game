@@ -222,15 +222,32 @@ def question_sheet_creator():
                 else:
                     correct_message = f"Correct! You get {50*mult} points"
                     wrong_message = f"Wrong answer! You loose {25*mult} points. Here is a clue to your next destination."
-
-
-
                 ask_task(task, option_a, option_b, option_c, correct_answer)
             else:
                 print("No task found in the database")
             break
             # printtaa siirtymän
-            # Tarvii flying to destination artin
+            # flying to destination screen
+            print(flyingtext)
+            print(r'''
+                                              _
+                                -=\`\
+                            |\ ____\_\__
+                          -=\c`""""""" "`)
+                             `~~~~~/ /~~`
+                               -==/ /
+                                 '-'
+
+                                 _  _
+                                ( `   )_
+                               (    )    `)
+                             (_   (_ .  _) _)
+                                                            _
+                                                           (  )
+                            _ .                         ( `  ) . )
+                          (  _ )_                      (_, _(  ,_)_)
+                        (_  _(_ ,)
+                         ''')
         elif answer == country2_position or answer == country1_position:
             print(f"Incorrect, you lost {50 * mult} points!")
             done_country_list.append(country2)
@@ -239,7 +256,27 @@ def question_sheet_creator():
             print(f"Moving to {country2}")
             print(f"Your points: {points}")
             # printtaa siirtymän
-            # Tarvii flying to destination artin
+            flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
+            print(flyingtext)
+            print(r'''
+                                  _
+                    -=\`\
+                |\ ____\_\__
+              -=\c`""""""" "`)
+                 `~~~~~/ /~~`
+                   -==/ /
+                     '-'
+
+                     _  _
+                    ( `   )_
+                   (    )    `)
+                 (_   (_ .  _) _)
+                                                _
+                                               (  )
+                _ .                         ( `  ) . )
+              (  _ )_                      (_, _(  ,_)_)
+            (_  _(_ ,)
+             ''')
             break
 
         else:
@@ -524,7 +561,9 @@ while True:
         score_board_insert()
         print("Scoreboard: ")
         scoreboard()
-        #Voittoscreeni tähän? (Jopo)
+        game_completed_text = pyfiglet.figlet_format("Congrats!", font="slant")
+        print(game_completed_text)
+        print('\nYou have arrived to your final destination! Well done!\n')
         break
     question_sheet_creator()
 
