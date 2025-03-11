@@ -18,12 +18,14 @@
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
-#from just_playback import Playback
-#playback = Playback()
-#playback.load_file('musa.mp3')
+from just_playback import Playback
+playback = Playback()
+playback.load_file('musa.mp3')
 
-#playback.play()
-#from defer import return_value
+
+playback.play()
+from defer import return_value
+
 
 #pyfiglet, creates slanted text etc
 import pyfiglet                             #Muista asentaa python packages, uusin versio
@@ -35,7 +37,7 @@ yhteys = mysql.connector.connect(
     user='keltanokat',
     password='lentopeli',
     autocommit=True,
-    #collation='utf8mb3_general_ci'
+    collation='utf8mb3_general_ci'
 
 )
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
@@ -370,6 +372,10 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print(f"Your points: {points}")
         if count != route_length:
             print(f"Here is a clue to your next destination: ")
+
+    elif user_answer not in  ['A', 'B' or 'C']:
+        print("You didn't give your answer as A, B or C")
+        answer = input("Give your answer as A, B or C ").upper()
 
 
     else:
