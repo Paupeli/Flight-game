@@ -18,13 +18,13 @@
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
-from just_playback import Playback
-playback = Playback()
-playback.load_file('musa.mp3')
+#from just_playback import Playback
+#playback = Playback()
+#playback.load_file('musa.mp3')
 
 
-playback.play()
-from defer import return_value
+#playback.play()
+#from defer import return_value
 
 
 #pyfiglet, creates slanted text etc
@@ -37,7 +37,7 @@ yhteys = mysql.connector.connect(
     user='keltanokat',
     password='lentopeli',
     autocommit=True,
-    collation='utf8mb3_general_ci'
+    #collation='utf8mb3_general_ci'
 
 )
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
@@ -208,6 +208,13 @@ def question_sheet_creator():
             done_country_list.append(country3)
             points = points + (100 * mult)
             cluelist.clear()
+            inp = input("Press enter to continue or write pause or p to pause")
+            if inp == "pause".lower() or inp == "p".lower():
+                pause_menu()
+            elif inp == '':
+                break
+            else:
+                break
             flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
             print(flying_text)
             print(r'''
@@ -231,6 +238,13 @@ def question_sheet_creator():
                                      ''')
             count = count + 1
             print(f"Your points: {points}")
+            inp = input("Press enter to continue or write pause or p to pause")
+            if inp == "pause".lower() or inp == "p".lower():
+                pause_menu()
+            elif inp == '':
+                break
+            else:
+                break
             task_data = get_task_from_flight_game()
             if task_data:
                 task = task_data["task"]
@@ -255,6 +269,13 @@ def question_sheet_creator():
             done_country_list.append(country2)
             points = points - (50 * mult)
             wrong_answers += 1
+            inp = input("Press enter to continue or write pause or p to pause")
+            if inp == "pause".lower() or inp == "p".lower():
+                pause_menu()
+            elif inp == '':
+                break
+            else:
+                break
             flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
             print(flying_text)
             print(r'''
@@ -277,11 +298,18 @@ def question_sheet_creator():
                         (_  _(_ ,)
                          ''')
             print(f"Your points: {points}")
-            # printtaa siirtymän
             break
+            # printtaa siirtymän
 
         else:
             print("You didn't give your answer as A, B or C")
+            inp = input("Press enter to continue or write pause or p to pause")
+            if inp == "pause".lower() or inp == "p".lower():
+                pause_menu()
+            elif inp == '':
+                break
+            else:
+                break
             answer = input("Give your answer as A, B or C ").upper()
     return points, wrong_answers, total_points, country3, count
 
@@ -386,6 +414,9 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print("Correct")
         print(f"You got {50*mult} points! ")
         print(f"Your points: {points}")
+        inp = input("Press enter to continue or write pause or p to pause")
+        if inp == "pause".lower() or inp == "p".lower():
+            pause_menu()
         if count != route_length:
             print(f"Here is a clue to your next destination: ")
 
@@ -399,6 +430,9 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print("Incorrect")
         print(f"Oh no, you lost {25*mult} points! ")
         print(f"Your points: {points}")
+        inp = input("Press enter to continue or write pause or p to pause")
+        if inp == "pause".lower() or inp == "p".lower():
+            pause_menu()
         print(f"Here is a clue to your next destination: ")
 
 # 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
@@ -418,22 +452,22 @@ def pause_menu():
     while True:
         pause_menu_text = pyfiglet.figlet_format("Game Paused", font="slant")
         print(f"\n\n{pause_menu_text}")
-        print(f"\nOptions:\n>Continue\n>Check scoreboard\n>Rules\n>Main Menu\n>Quit\n")
+        print(f"\nOptions:\n>Continue\n>Check scoreboard\n>Rules\n>Quit\n")
         pause_option = input("\nWhat would you like to do? >").lower()
-        if pause_option == "continue":
+        if pause_option == "continue".lower():
             break
-        elif pause_option == "check scoreboard":
+        elif pause_option == "check scoreboard" or pause_option == "scoreboard".lower():
             scoreboard()           #HUOM. PAUSEN AIKAINEN SCOREBOARD: Koodi on nyt kahdesti eli scoreboard() ja score_board_print() kts. ylhäällä - onko päivitetty?
-        elif pause_option == "rules":
+        elif pause_option == "rules".lower():
             instructions()
-        elif pause_option == "main menu":
-            main_menu()   #Tässä tarkistus, sekottaako pääkoodin? Tai, miten pääkoodin saa rullaamaan tän kanssa
-        elif pause_option == "quit":
+        elif pause_option == "quit".lower():
             quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
+            print(quit_game_text)
             quit()
     return
 
 def main_menu():
+
     print("\n-------------------------\n")
     main_menu_text = """▐▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▌
 ▐ ███╗   ███╗ █████╗ ██╗███╗   ██╗    ███╗   ███╗███████╗███╗   ██╗██╗   ██╗ ▌
@@ -462,7 +496,7 @@ def main_menu():
             instructions()
         elif option == "quit game":
             quit()
-    return user
+    return user, count, total_points, points, wrong_answers
 
 
 def new_game():
@@ -603,6 +637,16 @@ while True:
         scoreboard()
         break
     question_sheet_creator()
+    inp = input("Press enter to continue or write pause or p to pause")
+    if inp == "pause".lower() or inp == "p".lower():
+        pause_menu()
+    elif inp == '':
+        question_sheet_creator()
+    else:
+        question_sheet_creator()
+
+
+
 
 
 
