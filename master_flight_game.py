@@ -14,12 +14,7 @@
 
 # PELIN RAKENNE (jokainen rivi on suurin piirtein "koodaustehtävä")
 
-#background music, plays throughout the game
-from just_playback import Playback
-playback = Playback()
-playback.load_file('musa.mp3')
 
-playback.play()
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
@@ -40,7 +35,7 @@ yhteys = mysql.connector.connect(
     user='keltanokat',
     password='lentopeli',
     autocommit=True,
-    collation='utf8mb3_general_ci'
+    #collation='utf8mb3_general_ci'
 
 )
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
@@ -234,8 +229,8 @@ def question_sheet_creator():
             else:
                 print("No task found in the database")
             break
-            # sql koodi siiŕtymää varten
             # printtaa siirtymän
+            # Tarvii flying to destination artin
         elif answer == country2_position or answer == country1_position:
             print(f"Incorrect, you lost {50 * mult} points!")
             done_country_list.append(country2)
@@ -243,8 +238,8 @@ def question_sheet_creator():
             wrong_answers += 1
             print(f"Moving to {country2}")
             print(f"Your points: {points}")
-            # sql koodi siiŕtymää varten
             # printtaa siirtymän
+            # Tarvii flying to destination artin
             break
 
         else:
@@ -275,15 +270,6 @@ def score_board_insert():
             cursor = yhteys.cursor()
             cursor.execute(sql)
             print("New personal best!")
-    return
-def score_board_print():
-    sql = f"select screen_name, score, high_score from game order by high_score desc limit 5;"
-    cursor = yhteys.cursor()
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    for row in result:
-        print(f"| Name: {row[0]} | Last game's points: {row[1]} | High score: {row[2]} |")
-        #jos joku voisi tehdä tästä kunnon taulukon se olisi kiva
     return
 def length():
     global route_length
@@ -528,15 +514,17 @@ while True:
         print("Too many wrong answers, game over")
         print("Total points: " + str(points))
         score_board_insert()
-        score_board_print()
         game_over()                             #Lisäsin tämän tänne, menee gameover näkymään
+        print("Scoreboard: ")
+        scoreboard()
         break
     elif count == route_length:
         print("You completed the game")
         print("Total points: " + str(points))
         score_board_insert()
-        score_board_print()
-        #Voittoscreeni tähän?
+        print("Scoreboard: ")
+        scoreboard()
+        #Voittoscreeni tähän? (Jopo)
         break
     question_sheet_creator()
 
