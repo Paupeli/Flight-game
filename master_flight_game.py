@@ -478,21 +478,18 @@ def quit_game():
     print("-----------\nQuitting game...\n____________")
     exit()
 
-
 def instructions():
     print(
-        "___________\n\n\nWelcome to Across Europe!\nThe rules are simple:\n\n 1) You start in Helsinki Vantaa Airport\n\n 2) You get a clue where you should go next"
+        "___________\n\n\nWelcome to Journey Across Europe!\nThe rules are simple:\n\n 1) You start in Helsinki Vantaa Airport\n\n 2) You get a clue where you should go next"
         "\n  - Right guess: +100 points\n  - Wrong guess: -50 points\n  - Guess wrong 3 times: game over!\n\n 3) Once you get to the correct airport, you get a task\n  - Complete the task and get +50 points!\n"
         "  - Fail the task, shame on you, -25 points \n\n 4) Finish the game by arriving to the final airport! :)")
     return
-
-
-menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
 ## NÄMÄ ALLA KÄYNNISTÄÄ FUNKTIOT YLLÄ
 
 start_screen()
 
+menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 option = ""
 user = main_menu_options(option)
 # ^^^^^^^^^^^^^^^^^^^^

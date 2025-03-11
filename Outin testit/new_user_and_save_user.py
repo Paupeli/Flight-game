@@ -24,6 +24,7 @@
 
 
 import mysql.connector
+import pyfiglet
 
 yhteys = mysql.connector.connect(
     host='127.0.0.1',
@@ -35,6 +36,26 @@ yhteys = mysql.connector.connect(
     collation='utf8mb3_general_ci'
 
 )
+
+def pause_menu():
+    global pause_option
+    while True:
+        pause_menu_text = pyfiglet.figlet_format("Game Paused", font="slant")
+        print(f"\n\n{pause_menu_text}")
+        print(f"\nOptions:\n>Continue\n>Check scoreboard\n>Rules\n>Main Menu\n>Quit\n")
+        pause_option = input("\nWhat would you like to do? >").lower()
+        if pause_option == "continue":
+            break
+        elif pause_option == "check scoreboard":
+            scoreboard()
+        elif pause_option == "rules":
+            instructions()
+        elif pause_option == "main menu":
+            main_menu_start()   #Tässä tarkistus, sekottaako pääkoodin? Tai, miten pääkoodin saa rullaamaan tän kanssa
+        elif pause_option == "quit":
+            quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
+            quit()
+    return
 
 def main_menu(menu_selection):
     print("\n-------------------------\n")
@@ -153,11 +174,15 @@ def instructions():
         "  - Fail the task, shame on you, -25 points \n\n 4) Finish the game by arriving to the final airport! :)")
     return
 
+def main_menu_start():
+    menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
 
-menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']
+    option = main_menu(menu_selection)
 
-option = main_menu(menu_selection)
+    user = main_menu_options(option)
+    return user
 
-user = main_menu_options(option)
+pause_menu()
+main_menu_start = main_menu_start()
 
 # !!!! TÄSSÄ KOHTAA "USER" KÄYTTÖÖN JA PELI STARTTAA HELSINGISTÄ
