@@ -88,9 +88,27 @@ def pause_menu():
             quit()
     return
 
-quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
-print(quit_game_text)
-quit()
+flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
+print(flying_text)
+print(r'''
+                                                          _
+                                            -=\`\
+                                        |\ ____\_\__
+                                      -=\c`""""""" "`)
+                                         `~~~~~/ /~~`
+                                           -==/ /
+                                             '-'
+
+                                             _  _
+                                            ( `   )_
+                                           (    )    `)
+                                         (_   (_ .  _) _)
+                                                                        _
+                                                                       (  )
+                                        _ .                         ( `  ) . )
+                                      (  _ )_                      (_, _(  ,_)_)
+                                    (_  _(_ ,)
+                                     ''')
 
 
 

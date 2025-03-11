@@ -556,8 +556,6 @@ start_screen()
 
 user = main_menu()
 
-# ^^^^^^^^^^^^^^^^^^^^
-
 length()
                 # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
 while route_length > len(country_list):
