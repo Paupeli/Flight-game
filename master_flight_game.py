@@ -22,8 +22,10 @@ from just_playback import Playback
 playback = Playback()
 playback.load_file('musa.mp3')
 
+
 playback.play()
 from defer import return_value
+
 
 #pyfiglet, creates slanted text etc
 import pyfiglet                             #Muista asentaa python packages, uusin versio
@@ -206,7 +208,27 @@ def question_sheet_creator():
             done_country_list.append(country3)
             points = points + (100 * mult)
             cluelist.clear()
-            print(f"Moving to {country3}")
+            flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
+            print(flying_text)
+            print(r'''
+                                                          _
+                                            -=\`\
+                                        |\ ____\_\__
+                                      -=\c`""""""" "`)
+                                         `~~~~~/ /~~`
+                                           -==/ /
+                                             '-'
+
+                                             _  _
+                                            ( `   )_
+                                           (    )    `)
+                                         (_   (_ .  _) _)
+                                                                        _
+                                                                       (  )
+                                        _ .                         ( `  ) . )
+                                      (  _ )_                      (_, _(  ,_)_)
+                                    (_  _(_ ,)
+                                     ''')
             count = count + 1
             print(f"Your points: {points}")
             task_data = get_task_from_flight_game()
@@ -222,24 +244,40 @@ def question_sheet_creator():
                 else:
                     correct_message = f"Correct! You get {50*mult} points"
                     wrong_message = f"Wrong answer! You loose {25*mult} points. Here is a clue to your next destination."
-
-
-
                 ask_task(task, option_a, option_b, option_c, correct_answer)
             else:
                 print("No task found in the database")
-            break
             # printtaa siirtymän
-            # Tarvii flying to destination artin
+            # flying to destination screen
+            break
         elif answer == country2_position or answer == country1_position:
             print(f"Incorrect, you lost {50 * mult} points!")
             done_country_list.append(country2)
             points = points - (50 * mult)
             wrong_answers += 1
-            print(f"Moving to {country2}")
+            flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
+            print(flying_text)
+            print(r'''
+                                              _
+                                -=\`\
+                            |\ ____\_\__
+                          -=\c`""""""" "`)
+                             `~~~~~/ /~~`
+                               -==/ /
+                                 '-'
+
+                                 _  _
+                                ( `   )_
+                               (    )    `)
+                             (_   (_ .  _) _)
+                                                            _
+                                                           (  )
+                            _ .                         ( `  ) . )
+                          (  _ )_                      (_, _(  ,_)_)
+                        (_  _(_ ,)
+                         ''')
             print(f"Your points: {points}")
             # printtaa siirtymän
-            # Tarvii flying to destination artin
             break
 
         else:
@@ -527,8 +565,10 @@ while True:
         print("Total points: " + str(points))
         score_board_insert()
         print("Scoreboard: ")
+        game_completed_text = pyfiglet.figlet_format("Congrats!", font="slant")
+        print(game_completed_text)
+        print('\nYou have arrived to your final destination! Well done!\n')
         scoreboard()
-        #Voittoscreeni tähän? (Jopo)
         break
     question_sheet_creator()
 
