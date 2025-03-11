@@ -14,12 +14,7 @@
 
 # PELIN RAKENNE (jokainen rivi on suurin piirtein "koodaustehtävä")
 
-#background music, plays throughout the game
-from just_playback import Playback
-playback = Playback()
-playback.load_file('musa.mp3')
 
-playback.play()
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
@@ -27,8 +22,10 @@ from just_playback import Playback
 playback = Playback()
 playback.load_file('musa.mp3')
 
+
 playback.play()
-#from defer import return_value
+from defer import return_value
+
 
 #pyfiglet, creates slanted text etc
 import pyfiglet                             #Muista asentaa python packages, uusin versio
@@ -211,7 +208,27 @@ def question_sheet_creator():
             done_country_list.append(country3)
             points = points + (100 * mult)
             cluelist.clear()
-            print(f"Moving to {country3}")
+            flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
+            print(flying_text)
+            print(r'''
+                                                          _
+                                            -=\`\
+                                        |\ ____\_\__
+                                      -=\c`""""""" "`)
+                                         `~~~~~/ /~~`
+                                           -==/ /
+                                             '-'
+
+                                             _  _
+                                            ( `   )_
+                                           (    )    `)
+                                         (_   (_ .  _) _)
+                                                                        _
+                                                                       (  )
+                                        _ .                         ( `  ) . )
+                                      (  _ )_                      (_, _(  ,_)_)
+                                    (_  _(_ ,)
+                                     ''')
             count = count + 1
             print(f"Your points: {points}")
             task_data = get_task_from_flight_game()
@@ -227,23 +244,39 @@ def question_sheet_creator():
                 else:
                     correct_message = f"Correct! You get {50*mult} points"
                     wrong_message = f"Wrong answer! You loose {25*mult} points. Here is a clue to your next destination."
-
-
-
                 ask_task(task, option_a, option_b, option_c, correct_answer)
             else:
                 print("No task found in the database")
-            break
-            # sql koodi siiŕtymää varten
             # printtaa siirtymän
+            # flying to destination screen
+            break
         elif answer == country2_position or answer == country1_position:
             print(f"Incorrect, you lost {50 * mult} points!")
             done_country_list.append(country2)
             points = points - (50 * mult)
             wrong_answers += 1
-            print(f"Moving to {country2}")
+            flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
+            print(flying_text)
+            print(r'''
+                                              _
+                                -=\`\
+                            |\ ____\_\__
+                          -=\c`""""""" "`)
+                             `~~~~~/ /~~`
+                               -==/ /
+                                 '-'
+
+                                 _  _
+                                ( `   )_
+                               (    )    `)
+                             (_   (_ .  _) _)
+                                                            _
+                                                           (  )
+                            _ .                         ( `  ) . )
+                          (  _ )_                      (_, _(  ,_)_)
+                        (_  _(_ ,)
+                         ''')
             print(f"Your points: {points}")
-            # sql koodi siiŕtymää varten
             # printtaa siirtymän
             break
 
@@ -276,15 +309,8 @@ def score_board_insert():
             cursor.execute(sql)
             print("New personal best!")
     return
-def score_board_print():
-    sql = f"select screen_name, score, high_score from game order by high_score desc limit 5;"
-    cursor = yhteys.cursor()
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    for row in result:
-        print(f"| Name: {row[0]} | Last game's points: {row[1]} | High score: {row[2]} |")
-        #jos joku voisi tehdä tästä kunnon taulukon se olisi kiva
 
+def score_board_print():
     #TÄSSÄ MAIN MENUN VASTAAVA; onko ok? -outi
     #def scoreboard():
    # sql = f"select screen_name, high_score from game order by high_score desc limit 5;"
@@ -298,6 +324,7 @@ def score_board_print():
        # print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")
     #return
     return
+
 def length():
     global route_length
     while True:
@@ -361,6 +388,10 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print(f"Your points: {points}")
         if count != route_length:
             print(f"Here is a clue to your next destination: ")
+
+    elif user_answer not in  ['A', 'B' or 'C']:
+        print("You didn't give your answer as A, B or C")
+        answer = input("Give your answer as A, B or C ").upper()
 
 
     else:
@@ -557,15 +588,19 @@ while True:
         print("Too many wrong answers, game over")
         print("Total points: " + str(points))
         score_board_insert()
-        score_board_print()
         game_over()                             #Lisäsin tämän tänne, menee gameover näkymään
+        print("Scoreboard: ")
+        scoreboard()
         break
     elif count == route_length:
         print("You completed the game")
         print("Total points: " + str(points))
         score_board_insert()
-        score_board_print()
-        #Voittoscreeni tähän?
+        print("Scoreboard: ")
+        game_completed_text = pyfiglet.figlet_format("Congrats!", font="slant")
+        print(game_completed_text)
+        print('\nYou have arrived to your final destination! Well done!\n')
+        scoreboard()
         break
     question_sheet_creator()
 
