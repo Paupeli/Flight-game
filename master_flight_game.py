@@ -18,13 +18,16 @@
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
-#from just_playback import Playback
-#playback = Playback()
-#playback.load_file('musa.mp3')
+
+from just_playback import Playback
+import defer
+playback = Playback()
+playback.load_file('musa.mp3')
 
 
-#playback.play()
-#from defer import return_value
+
+playback.play()
+from defer import return_value
 
 
 #pyfiglet, creates slanted text etc
@@ -37,7 +40,7 @@ yhteys = mysql.connector.connect(
     user='keltanokat',
     password='lentopeli',
     autocommit=True,
-    #collation='utf8mb3_general_ci'
+    collation='utf8mb3_general_ci'
 
 )
 # 0 B ) IMPORTIT TÄHÄN (import.random, jne)
@@ -572,8 +575,8 @@ def scoreboard():
     return
 
 def quit_game():
-    print("-----------\nQuitting game...\n____________")
-    exit()
+    quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
+    quit()
 
 def instructions():
     print(
@@ -587,7 +590,6 @@ def instructions():
 start_screen()
 
 user = main_menu()
-
 
 # ^^^^^^^^^^^^^^^^^^^^
 
