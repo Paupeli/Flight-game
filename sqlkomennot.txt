@@ -12,7 +12,8 @@ ALTER TABLE country DROP COLUMN keywords;
 ALTER TABLE game DROP COLUMN co2_consumed;
 ALTER TABLE game DROP COLUMN co2_budget;
 ALTER TABLE game ADD score VARCHAR(40);
-ALTER TABLE game ADD COLUMN high_score VARCHAR (500);
+ALTER TABLE game ADD COLUMN high_score float;
+ALTER TABLE game MODIFY COLUMN high_score collate utf8mb4_uca1400_ai_ci;
 
 delete from airport where type = "heliport";
 delete from airport where type = "closed";
