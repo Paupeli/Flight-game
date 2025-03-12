@@ -107,6 +107,8 @@ def game_over():
 
 
                 ''')
+    over_press = input("Press ENTER to see scoreboard")
+    return
 
 def route_creator():
     num = random.randint(1, 261)
@@ -303,7 +305,7 @@ def score_board_insert(user, points):
     score = cursor.fetchone()
     cursor.close()                                                          #yhteysongelma? > cursor.close()
     if score is None or score[0] is None or int(score[0]) < points:
-            sql2 = f"update game set high_score = '{points}'  where screen_name = '{user}';"
+            sql2 = f"update game set high_score = {points} where screen_name = '{user}';"
             cursor = yhteys.cursor()
             cursor.execute(sql2)
             yhteys.commit()
@@ -551,7 +553,7 @@ while route_length * 1.5 > len(wrong_country_list):
 print("Welcome to your starting point at Helsinki-Vantaa airport! Here is a clue to your first destination: ")
 
 while True:
-    if wrong_answers >= 3:                                                          #Ei vaikuta toimivan -outi
+    if wrong_answers >= 3:
         print("Too many wrong answers, game over")
         print(f"Total points: {points}")
         #score_board_insert(user,points)
@@ -568,5 +570,15 @@ while True:
     else:
         question_sheet_creator()
 
+print(f"DEBUG: user={user}, points={points}")
+if yhteys.is_connected():
+    print("Database connection is active")
+else:
+    print("ERROR: Database connection lost")
+print("DEBUG: Exiting game loop, calling score_board_insert now")
+try:
+    score_board_insert(user, points)
+except Exception as e:
+    print(f"ERROR: {e}")
 score_board_insert(user, points)
 exit() #vai quit?
