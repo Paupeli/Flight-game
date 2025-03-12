@@ -385,8 +385,6 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         if count != route_length:
             print(f"Here is a clue to your next destination: ")
 
-
-
     else:
         points = points-(25*mult)
         print("Incorrect")
