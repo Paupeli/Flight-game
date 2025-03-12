@@ -422,30 +422,34 @@ def main_menu():
     global user
 
     while True:
-        menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']#Looppaa main menuun kunnes pelaaja haluaa alottaa uuden pelin
+        #Looppaa main menuun kunnes pelaaja haluaa alottaa uuden pelin
         print("-------------------------\n")
-        print(f"\n{(menu_selection)}\n")
+        print(f"\n>New Game\n>Scoreboard\n>Rules\n>Quit\n")
         option = input("Please select >").lower()
-        if option == "new game":
+        if option == "new game" or option == "new":
             user = new_game()
             break
         elif option == "scoreboard":
             scoreboard()
-        elif option == "instructions":
+        elif option == "rules":
             instructions()
-        elif option == "quit game":
+        elif option == "quit":
             quit()
     return user, count, total_points, points, wrong_answers
 
 
 def new_game():
         # options = ['Old user', 'New user']
-    global user
-    option = input("Do you want to play as an old user or create a new user? ").lower()
-    if option == "old user":
-        user = old_user()
-    elif option == "new user":
-        user = new_user()
+    global option
+    print(f"\nPlease select:\n>Old user\n>New user")
+    option = input("Please select >").lower()
+    while True:
+        if option == "old user" or option == "old":
+            user = old_user()
+            break
+        if option == "new user" or option == "new":
+            user = new_user()
+            break
     return user
 
 def old_user():
