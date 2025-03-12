@@ -412,9 +412,9 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
 
     user_answer = input("Enter your answer (a,b, or c): ").lower()
 
-    if user_answer not in ['A', 'B' or 'C']:
-        print("You didn't give your answer as A, B or C")
-        answer = input("Give your answer as A, B or C ").upper()
+    if user_answer not in ['a', 'b' or 'c']:
+        print("You didn't give your answer as A, B, or C")
+        user_answer = input("Give your answer as A, B, or C: ").lower()
 
     if user_answer == correct_answer.lower():
         points = points + (50*mult)
@@ -581,8 +581,8 @@ def quit_game():
 def instructions():
     print(
         "___________\n\n\nWelcome to Journey Across Europe!\nThe rules are simple:\n\n 1) You start in Helsinki Vantaa Airport\n\n 2) You get a clue where you should go next"
-        "\n  - Right guess: +100 points\n  - Wrong guess: -50 points\n  - Guess wrong 3 times: game over!\n\n 3) Once you get to the correct airport, you get a task\n  - Complete the task and get +50 points!\n"
-        "  - Fail the task, shame on you, -25 points \n\n 4) Finish the game by arriving to the final airport! :)")
+        "\n  - Right guess: +150, +100 or +50 points depending on the length of the route\n  - Wrong guess: -75, -50 or -25 points\n  - Guess wrong 3 times: game over!\n\n 3) Once you get to the correct airport, you get a task\n  - Complete the task and get +75, +50 or +25 points!\n"
+        "  - Fail the task, shame on you, -37.5, -25 or -12.5 points \n\n 4) Finish the game by arriving to the final airport! :)")
     return
 
 ## NÄMÄ ALLA KÄYNNISTÄÄ FUNKTIOT YLLÄ
@@ -616,7 +616,7 @@ while route_length * 1.5 > len(wrong_country_list):
             #OIKEA VASTAUS
                 # +100 pistettä
                 # Ilmoitus oikeasta vastauksesta, siirtyminen oikealle mukaiselle kentälle
-print("Welcome to your starting point at Helsinki-Vantaa airport! Here is a clue to your first destination: ")
+print("\nWelcome to your starting point at Helsinki-Vantaa airport, traveler!\nYour amazing journey across Europe starts here~\nYou need to solve clues to get to your destination and do different tasks there.\nHere’s an envelope with a clue to your first destination: \n")
 while True:
     if wrong_answers >= 3:
         print("Too many wrong answers, game over")
