@@ -224,7 +224,7 @@ def question_sheet_creator():
     answer = input("Give your answer as A, B or C ").upper()
     while True:
         if answer == correct_answer_position:
-            print(f"Correct, you got {100 * mult} points!")
+            print(f"\nCorrect, you got {100 * mult} points!")
             done_country_list.append(country3)
             points = points + (100 * mult)
             cluelist.clear()
@@ -250,7 +250,7 @@ def question_sheet_creator():
                                     (_  _(_ ,)
                                      ''')
             count = count + 1
-            print(f"Your points: {points}")
+            print(f"\nYour points: {points}")
             task_data = get_task_from_flight_game()
             if task_data:
                 task = task_data["task"]
@@ -259,17 +259,17 @@ def question_sheet_creator():
                 option_c = task_data["option_c"]
                 correct_answer = task_data["correct_answer"]
                 if count != route_length:
-                    correct_message = f"Correct! You get {50*mult} points and a clue to your next destination."
-                    wrong_message = f"Wrong answer! You loose {25*mult} points. Here is a clue to your next destination."
+                    correct_message = f"\nCorrect! You get {50*mult} points and a clue to your next destination."
+                    wrong_message = f"\nWrong answer! You loose {25*mult} points. Here is a clue to your next destination."
                 else:
-                    correct_message = f"Correct! You get {50*mult} points"
-                    wrong_message = f"Wrong answer! You loose {25*mult} points. Here is a clue to your next destination."
+                    correct_message = f"\nCorrect! You get {50*mult} points"
+                    wrong_message = f"\nWrong answer! You loose {25*mult} points. Here is a clue to your next destination."
                 ask_task(task, option_a, option_b, option_c, correct_answer)
             else:
                 print("No task found in the database")
             break
         elif answer == country2_position or answer == country1_position:
-            print(f"Incorrect, you lost {50 * mult} points!")
+            print(f"\nIncorrect, you lost {50 * mult} points!")
             done_country_list.append(country2)
             points = points - (50 * mult)
             wrong_answers += 1
@@ -294,10 +294,10 @@ def question_sheet_creator():
                           (  _ )_                      (_, _(  ,_)_)
                         (_  _(_ ,)
                          ''')
-            print(f"Your points: {points}")
+            print(f"\nYour points: {points}\n")
             break
         else:
-            print("You didn't give your answer as A, B or C")
+            print("\nYou didn't give your answer as A, B or C")
             answer = input("Give your answer as A, B or C ").upper()
     return points, wrong_answers, total_points, country3, count
 
@@ -312,7 +312,7 @@ def score_board_insert(user, points):
         cursor = yhteys.cursor()
         cursor.execute(sql2)
         yhteys.commit()
-        print(f"Current high score: {points}!")
+        print(f"\nCurrent high score: {points}!")
         scoreboard()
         inp = input("Press ENTER to quit the game >>>")
     else:
@@ -323,7 +323,7 @@ def score_board_insert(user, points):
 def length():
     global route_length
     while True:
-        route_length = int(input("Give the desired length of the route in numbers (5, 10, 15): "))
+        route_length = int(input("\nGive the desired length of the route in numbers (5, 10, 15): "))
         if route_length == 5 or route_length == 10 or route_length == 15:
             break
         else:
@@ -367,7 +367,7 @@ def get_task_from_flight_game():
 
 def ask_task(task, option_a, option_b, option_c, correct_answer,):
     global points, mult
-    print(f"Task from country: {country3}")
+    print(f"\nTask from country: {country3}\n")
     print(task)
 
     print(f"{option_a}")
@@ -377,29 +377,29 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
     user_answer = input("Enter your answer (a,b, or c): ").lower()
 
     while user_answer not in ['a', 'b', 'c'] or user_answer == '':
-        print("You didn't give your answer as a, b or c.")
+        print("\nYou didn't give your answer as a, b or c.")
         user_answer = input("Give your answer as a, b or c: ").lower()
 
     if user_answer == correct_answer.lower():
         points = points + (50*mult)
-        print("Correct")
+        print("\nCorrect")
         print(f"You got {50*mult} points! ")
-        print(f"Your points: {points}")
+        print(f"\nYour points: {points}")
         inp = input(f"\n-------------------------\nPress ENTER to continue // Press P to pause game >>\n\n").lower()
         if inp == "pause" or inp == "p":
             pause_menu()
         if count != route_length:
-            print(f"Here is a clue to your next destination: ")
+            print(f"\nHere is a clue to your next destination: \n")
 
     else:
         points = points-(25*mult)
-        print("Incorrect")
+        print("\nIncorrect")
         print(f"Oh no, you lost {25*mult} points! ")
-        print(f"Your points: {points}")
+        print(f"\nYour points: {points}")
         inp = input(f"\n-------------------------\nPress ENTER to continue // Press P to pause game >> \n\n").lower()
         if inp == "pause" or inp == "p":
             pause_menu()
-        print(f"Here is a clue to your next destination: ")
+        print(f"\nHere is a clue to your next destination: \n")
 
 #PAUSE_MENU
 def pause_menu():
