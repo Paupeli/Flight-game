@@ -382,8 +382,6 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
     elif user_answer not in  ['A', 'B' or 'C']:
         print("You didn't give your answer as A, B or C")
         answer = input("Give your answer as A, B or C ").upper()
-
-
     else:
         points = points-(25*mult)
         print("Incorrect")
@@ -394,18 +392,7 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
             pause_menu()
         print(f"Here is a clue to your next destination: ")
 
-# 1) ALOITUSRUUTU (Grafiikka, ääni?) (**JOHANNA**)
-
-# 2) MAIN MENU, SCOREBOARD (**OUTI**) JA UUDEN PELIN LUONTI (**RONI**)
-    # > Start a new game
-        # >> Valitse hahmo (huom. game.location pitää päivittää helsingiksi)
-        # >> Luo uusi hahmo
-            # >>> Valitse, kuinka pitkä peli (**RONI**)
-
-
-#HUOM! NÄMÄ OVAT FUNKTIOT, JOTKA KÄYNNISTYVÄT ALLA MAIN MENUN PÄÄKOODIN TOIMESTA (MERKITTY MISTÄ ALKAA)
-
-#PAUSE_MENU EI KÄYTÖSSÄ MISSÄÄN - TESTATAAN...
+#PAUSE_MENU
 def pause_menu():
     global pause_option
     while True:
