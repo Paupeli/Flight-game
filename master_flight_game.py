@@ -566,4 +566,4 @@ while True:
         question_sheet_creator()
 
 score_board_insert(user, points)
-exit()
+exit() #vai quit?
