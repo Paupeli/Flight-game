@@ -490,6 +490,10 @@ def old_user():
             print("Please select an existing user.")
             users = all_users_fetch()
         else:
+            sql2 = f"update game join airport on game.location = airport.ident set game.location = 'EFHK' where game.screen_name = '{user}';"
+            kursori = yhteys.cursor()
+            kursori.execute(sql2)
+            yhteys.commit()
             break
 
     return user  # !!! Tähän tallennusmekanismi !!! > score, high_score
