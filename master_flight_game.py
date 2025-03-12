@@ -18,6 +18,7 @@
 
 # 0 A ) SQL-connector (yhteinen salasana)
 import mysql.connector
+import ast
 
 from just_playback import Playback
 import defer
@@ -289,19 +290,21 @@ def question_sheet_creator():
 
 # Lisätty points määrittäväksi, muuten pointsilla ei arvoa -outi
 def score_board_insert(user, points):
-    sql1 = f"select high_score from game where screen_name = '{user}';"
+    sql1 = f"select high_score from game where screen_name = 'user';"
     cursor = yhteys.cursor()
     cursor.execute(sql1)
-    score = cursor.fetchone()
-    cursor.close()                                                          #yhteysongelma? > cursor.close()
-    if score is None or score[0] is None or int(score[0]) < points:
-            sql2 = f"update game set high_score = {points} where screen_name = '{user}';"
-            cursor = yhteys.cursor()
-            cursor.execute(sql2)
-            yhteys.commit()
-            print(f"New high score: {points}!")
-    scoreboard()
-    inp = input("Press ENTER to quit the game >>>")
+    result = cursor.fetchone()
+    if result is None or result[0] < points:
+        sql2 = f"update game set high_score = {points} where screen_name = '{user}';"
+        cursor = yhteys.cursor()
+        cursor.execute(sql2)
+        yhteys.commit()
+        print(f"Current high score: {points}!")
+        scoreboard()
+        inp = input("Press ENTER to quit the game >>>")
+    else:
+        scoreboard()
+        inp = input("Press ENTER to quit the game >>>")
     return
 
 def length():
@@ -435,7 +438,7 @@ def main_menu():
             instructions()
         elif option == "quit":
             quit()
-    return user, count, total_points, points, wrong_answers
+    return user
 
 
 def new_game():
@@ -474,7 +477,7 @@ def old_user():
             print("Please select an existing user.")
             users = all_users_fetch()
         else:
-            sql2 = f"update game join airport on game.location = airport.ident set game.location = 'EFHK' where game.screen_name = '{user}';"
+            sql2 = f"update game set location = (select ident from airport where ident = 'EFHK') where screen_name = '{user}';"
             kursori = yhteys.cursor()
             kursori.execute(sql2)
             yhteys.commit()
@@ -489,7 +492,6 @@ def new_user():                                                                 
         sql_check = f"SELECT screen_name FROM game WHERE screen_name = '{user}';"
         kursori.execute(sql_check)
         result = kursori.fetchall()
-
         if not result:
             new_id = "SELECT COALESCE(MAX(id), 0) + 1 FROM game;"
             kursori = yhteys.cursor()
@@ -548,29 +550,20 @@ while True:
     if wrong_answers >= 3:
         print("Too many wrong answers, game over")
         print(f"Total points: {points}")
-        #score_board_insert(user,points)
-        game_over()                                                                  #Lisäsin tämän tänne, menee gameover näkymään -outi
+        print (user)
+        print (points)
+        game_over()
+        score_board_insert(user,points)             #Lisäsin tämän tänne, menee gameover näkymään -outi
         break
     elif count == route_length:
-        print("You completed the game")
+        print("You completed the game!")
         print(f"Total points: {points}")
         game_completed_text = pyfiglet.figlet_format("Congrats!", font="slant")
         print(game_completed_text)
         print('\nYou have arrived to your final destination! Well done!\n')
-        #score_board_insert(user, points)
+        score_board_insert(user, points)
         break
     else:
         question_sheet_creator()
 
-print(f"DEBUG: user={user}, points={points}")
-if yhteys.is_connected():
-    print("Database connection is active")
-else:
-    print("ERROR: Database connection lost")
-print("DEBUG: Exiting game loop, calling score_board_insert now")
-try:
-    score_board_insert(user, points)
-except Exception as e:
-    print(f"ERROR: {e}")
-score_board_insert(user, points)
 exit() #vai quit?
