@@ -111,6 +111,19 @@ def game_over():
     over_press = input("Press ENTER to see scoreboard")
     return
 
+#SCOREBOARD
+def scoreboard():
+    sql = f"select screen_name, high_score from game where high_score != 0 order by high_score desc limit 5;"
+    cursor = yhteys.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    print (f"\n______________________________\n{'USER':<15} | {'HIGH SCORE':<10} |\n_______________________________")
+    for row in result:
+        screen_name = row[0] if row[0] is not None else "N/A"
+        high_score = row[1] if row[1] is not None else "N/A"
+        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")
+    return
+
 def route_creator():
     num = random.randint(1, 261)
     sql = f"select airport.name, country.name from airport inner join country on airport.iso_country = country.iso_country and airport.id = {num} order by rand();"
@@ -506,19 +519,6 @@ def new_user():                                                                 
         else:
             print("User already exists. Please type in a new username.")
     return user
-
-
-def scoreboard():
-    sql = f"select screen_name, high_score from game order by high_score desc limit 5;"
-    cursor = yhteys.cursor()
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    print (f"\n______________________________\n{'USER':<15} | {'HIGH SCORE':<10} |\n_______________________________")
-    for row in result:
-        screen_name = row[0] if row[0] is not None else "N/A"
-        high_score = row[1] if row[1] is not None else "N/A"
-        print(f"{screen_name:<15} | {high_score:<10} |\n______________________________")
-    return
 
 def quit_game():
     quit_game_text = pyfiglet.figlet_format("quitting game...", font="slant")
