@@ -465,7 +465,7 @@ def old_user():
     users = all_users_fetch()
 
     while True:
-        user = input("Which user would you like to choose? ")
+        user = input("\nWhich user would you like to choose? ")
         sql1 = f"select screen_name from game where screen_name = '{user}';"
         kursori = yhteys.cursor()
         kursori.execute(sql1)
