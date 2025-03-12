@@ -237,9 +237,6 @@ def question_sheet_creator():
                                      ''')
             count = count + 1
             print(f"Your points: {points}")
-            inp = input("Press enter to continue or write pause or p to pause")
-            if inp == "pause".lower() or inp == "p".lower():
-                pause_menu()
             task_data = get_task_from_flight_game()
             if task_data:
                 task = task_data["task"]
@@ -290,11 +287,10 @@ def question_sheet_creator():
             break
         else:
             print("You didn't give your answer as A, B or C")
-            inp = input("Press enter to continue or write pause or p to pause")
-            if inp == "pause".lower() or inp == "p".lower():
-                pause_menu()
             answer = input("Give your answer as A, B or C ").upper()
-
+    inp = input(f"\n-------------------------\nPress ENTER to continue // Press P to pause game >>").lower()
+    if inp == "pause".lower() or inp == "p".lower():
+        pause_menu()
     return points, wrong_answers, total_points, country3, count
 
 # Lisätty points määrittäväksi, muuten pointsilla ei arvoa -outi
