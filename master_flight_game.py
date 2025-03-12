@@ -237,9 +237,6 @@ def question_sheet_creator():
                                      ''')
             count = count + 1
             print(f"Your points: {points}")
-            inp = input("Press enter to continue or write pause or p to pause")
-            if inp == "pause".lower() or inp == "p".lower():
-                pause_menu()
             task_data = get_task_from_flight_game()
             if task_data:
                 task = task_data["task"]
@@ -262,9 +259,6 @@ def question_sheet_creator():
             done_country_list.append(country2)
             points = points - (50 * mult)
             wrong_answers += 1
-            inp = input("Press enter to continue or write pause or p to pause")
-            if inp == "pause".lower() or inp == "p".lower():
-                pause_menu()
             flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
             print(flying_text)
             print(r'''
@@ -290,11 +284,7 @@ def question_sheet_creator():
             break
         else:
             print("You didn't give your answer as A, B or C")
-            inp = input("Press enter to continue or write pause or p to pause")
-            if inp == "pause".lower() or inp == "p".lower():
-                pause_menu()
             answer = input("Give your answer as A, B or C ").upper()
-
     return points, wrong_answers, total_points, country3, count
 
 # Lisätty points määrittäväksi, muuten pointsilla ei arvoa -outi
@@ -379,8 +369,8 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print("Correct")
         print(f"You got {50*mult} points! ")
         print(f"Your points: {points}")
-        inp = input("Press enter to continue or write pause or p to pause")
-        if inp == "pause".lower() or inp == "p".lower():
+        inp = input(f"\n-------------------------\nPress ENTER to continue // Press P to pause game >>\n\n").lower()
+        if inp == "pause" or inp == "p":
             pause_menu()
         if count != route_length:
             print(f"Here is a clue to your next destination: ")
@@ -390,8 +380,8 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print("Incorrect")
         print(f"Oh no, you lost {25*mult} points! ")
         print(f"Your points: {points}")
-        inp = input("Press enter to continue or write pause or p to pause")
-        if inp == "pause".lower() or inp == "p".lower():
+        inp = input(f"\n-------------------------\nPress ENTER to continue // Press P to pause game >> \n\n").lower()
+        if inp == "pause" or inp == "p":
             pause_menu()
         print(f"Here is a clue to your next destination: ")
 
@@ -432,30 +422,34 @@ def main_menu():
     global user
 
     while True:
-        menu_selection = ['New Game', 'Scoreboard', 'Instructions', 'Quit Game']#Looppaa main menuun kunnes pelaaja haluaa alottaa uuden pelin
+        #Looppaa main menuun kunnes pelaaja haluaa alottaa uuden pelin
         print("-------------------------\n")
-        print(f"\n{(menu_selection)}\n")
+        print(f"\n>New Game\n>Scoreboard\n>Rules\n>Quit\n")
         option = input("Please select >").lower()
-        if option == "new game":
+        if option == "new game" or option == "new":
             user = new_game()
             break
         elif option == "scoreboard":
             scoreboard()
-        elif option == "instructions":
+        elif option == "rules":
             instructions()
-        elif option == "quit game":
+        elif option == "quit":
             quit()
     return user, count, total_points, points, wrong_answers
 
 
 def new_game():
         # options = ['Old user', 'New user']
-    global user
-    option = input("Do you want to play as an old user or create a new user? ").lower()
-    if option == "old user":
-        user = old_user()
-    elif option == "new user":
-        user = new_user()
+    global option
+    print(f"\nPlease select:\n>Old user\n>New user")
+    option = input("Please select >").lower()
+    while True:
+        if option == "old user" or option == "old":
+            user = old_user()
+            break
+        if option == "new user" or option == "new":
+            user = new_user()
+            break
     return user
 
 def old_user():

@@ -63,3 +63,7 @@ def score_board_insert(user, points):
 user = "Leena"
 points = 700
 score_board_insert(user, points)
+
+inp = input(f"\n-------------------------\nPress ENTER to continue // Press P to pause game >>").lower()
+if inp == "pause".lower() or inp == "p".lower():
+    pause_menu()
