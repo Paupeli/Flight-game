@@ -366,9 +366,9 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
 
     user_answer = input("Enter your answer (a,b, or c): ").lower()
 
-    if user_answer not in ['A', 'B' or 'C']:
-        print("You didn't give your answer as A, B or C")
-        user_answer = input("Give your answer as A, B or C ").upper()
+    while user_answer not in ['a', 'b', 'c'] or user_answer == '':
+        print("You didn't give your answer as a, b or c.")
+        user_answer = input("Give your answer as a, b or c: ").lower()
 
     if user_answer == correct_answer.lower():
         points = points + (50*mult)
