@@ -143,6 +143,7 @@ def country_selector_for_questions():
             if row[1] not in country_list and row[1] not in wrong_country_list:
                 wrong_country_list.append(row[1])
     return
+
 def question_sheet_creator():
     global points
     global wrong_answers
@@ -211,13 +212,6 @@ def question_sheet_creator():
             done_country_list.append(country3)
             points = points + (100 * mult)
             cluelist.clear()
-            inp = input("Press enter to continue or write pause or p to pause")
-            if inp == "pause".lower() or inp == "p".lower():
-                pause_menu()
-            elif inp == '':
-                break
-            else:
-                break
             flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
             print(flying_text)
             print(r'''
@@ -244,10 +238,6 @@ def question_sheet_creator():
             inp = input("Press enter to continue or write pause or p to pause")
             if inp == "pause".lower() or inp == "p".lower():
                 pause_menu()
-            elif inp == '':
-                break
-            else:
-                break
             task_data = get_task_from_flight_game()
             if task_data:
                 task = task_data["task"]
@@ -264,8 +254,6 @@ def question_sheet_creator():
                 ask_task(task, option_a, option_b, option_c, correct_answer)
             else:
                 print("No task found in the database")
-            # printtaa siirtymän
-            # flying to destination screen
             break
         elif answer == country2_position or answer == country1_position:
             print(f"Incorrect, you lost {50 * mult} points!")
@@ -275,10 +263,6 @@ def question_sheet_creator():
             inp = input("Press enter to continue or write pause or p to pause")
             if inp == "pause".lower() or inp == "p".lower():
                 pause_menu()
-            elif inp == '':
-                break
-            else:
-                break
             flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
             print(flying_text)
             print(r'''
@@ -302,45 +286,34 @@ def question_sheet_creator():
                          ''')
             print(f"Your points: {points}")
             break
-            # printtaa siirtymän
-
         else:
             print("You didn't give your answer as A, B or C")
             inp = input("Press enter to continue or write pause or p to pause")
             if inp == "pause".lower() or inp == "p".lower():
                 pause_menu()
-            elif inp == '':
-                break
-            else:
-                break
             answer = input("Give your answer as A, B or C ").upper()
+
     return points, wrong_answers, total_points, country3, count
 
-def score_board_insert(user, points):                                                                 # Lisätty points määrittäväksi, muuten pointsilla ei arvoa -outi
-    global screen_name
-    sql = f"update game set high_score = {points} where screen_name = '{user}';"
+# Lisätty points määrittäväksi, muuten pointsilla ei arvoa -outi
+def score_board_insert(user, points):
+    sql1 = f"select high_score from game where screen_name = '{user}';"
     cursor = yhteys.cursor()
-    cursor.execute(sql)
-    sql = f"select high_score from game where high_score in (select max(high_score) from game) order by high_score desc limit 1;"
-    cursor = yhteys.cursor()
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    for row in result:
-        if int(row[0]) < points:
-            print("New High Score!")
-    sql = f"select high_score from game where screen_name = '{user}' order by high_score desc limit 1;"
-    cursor = yhteys.cursor()
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    for row in result:
-        if int(row[0]) < points:
-            sql = f"update game set high_score = {points} where screen_name = '{user}'"
+    cursor.execute(sql1)
+    score = cursor.fetchone()
+    cursor.close()                                                          #yhteysongelma? > cursor.close()
+    if score is None or score[0] is None or int(score[0]) < points:
+            sql2 = f"update game set high_score = '{points}'  where screen_name = '{user}';"
             cursor = yhteys.cursor()
-            cursor.execute(sql)
-            print("New personal best!")
+            cursor.execute(sql2)
+            yhteys.commit()
+            print(f"New high score: {points}!")
+    scoreboard()
+    inp = input("Press ENTER to quit the game >>>")
     return
 
 def length():
+    global route_length
     while True:
         route_length = int(input("Give the desired length of the route in numbers (5, 10, 15): "))
         if route_length == 5 or route_length == 10 or route_length == 15:
@@ -574,7 +547,6 @@ start_screen()
 
 user = main_menu()
 
-global route_length
 length()
               # Tässä kohtaa "tallennetaan" arvotut Euroopan maat ja kentät alkavaa peliä varten ! (Ronin koodi)
 while route_length > len(country_list):
@@ -583,59 +555,24 @@ while route_length * 1.5 > len(wrong_country_list):
     country_selector_for_questions()
 
 print("Welcome to your starting point at Helsinki-Vantaa airport! Here is a clue to your first destination: ")
+
 while True:
     if wrong_answers >= 3:                                                          #Ei vaikuta toimivan -outi
         print("Too many wrong answers, game over")
         print(f"Total points: {points}")
-        score_board_insert(user,points)
+        #score_board_insert(user,points)
         game_over()                                                                  #Lisäsin tämän tänne, menee gameover näkymään -outi
-        print("Scoreboard: ")
-        scoreboard()
         break
     elif count == route_length:
         print("You completed the game")
         print(f"Total points: {points}")
-        score_board_insert(user, points)
-        print("Scoreboard: ")
         game_completed_text = pyfiglet.figlet_format("Congrats!", font="slant")
         print(game_completed_text)
         print('\nYou have arrived to your final destination! Well done!\n')
-        scoreboard()
+        #score_board_insert(user, points)
         break
     else:
-        inp = input("Press enter to continue or write pause or p to pause").lower()
-        if inp == "pause" or inp == "p":
-            pause_menu()
-        elif inp == '':
-            question_sheet_creator()
-        else:
-            question_sheet_creator()
+        question_sheet_creator()
 
-
-
-
-
-
-
-    # Tehtävä kohteessa (**PAULIINA**)
-        # Oikea vastaus +50, väärä vastaus -25
-        # Ilmoitus käyttäjälle vastauksesta ja pisteistä
-        # >>> Peli kysyy vihjekysymyksen uudesta kohteesta (edellinen osio)
-
-
-
-    # Pisteet tallennetaan game.current_score
-
-# 4) PELIN PÄÄTTYMINEN
-    # 3 väärää vastausta > GAME OVER -ruutu
-
-    # Saapuminen maaliin > FINISH LINE REACHED -ruutu
-
-    # Jos game.current_score > game.high_score >>> pisteet tallennetaan game.high_score
-        #Ilmoitus high scoresta?
-
-    # Näytetään päivitetty scoreboard
-
-    # Valinta:
-#           > Main menu >> kohta 1, main menu
-#           > Close game >> Lopetusruutu? > peli lopettaa toiminnan
+score_board_insert(user, points)
+exit()
