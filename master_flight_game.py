@@ -259,9 +259,6 @@ def question_sheet_creator():
             done_country_list.append(country2)
             points = points - (50 * mult)
             wrong_answers += 1
-            inp = input("Press enter to continue or write pause or p to pause")
-            if inp == "pause".lower() or inp == "p".lower():
-                pause_menu()
             flying_text = pyfiglet.figlet_format("Flying to destination...", font="slant")
             print(flying_text)
             print(r'''
@@ -288,9 +285,6 @@ def question_sheet_creator():
         else:
             print("You didn't give your answer as A, B or C")
             answer = input("Give your answer as A, B or C ").upper()
-    inp = input(f"\n-------------------------\nPress ENTER to continue // Press P to pause game >>").lower()
-    if inp == "pause".lower() or inp == "p".lower():
-        pause_menu()
     return points, wrong_answers, total_points, country3, count
 
 # Lisätty points määrittäväksi, muuten pointsilla ei arvoa -outi
@@ -375,8 +369,8 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print("Correct")
         print(f"You got {50*mult} points! ")
         print(f"Your points: {points}")
-        inp = input("Press enter to continue or write pause or p to pause")
-        if inp == "pause".lower() or inp == "p".lower():
+        inp = input(f"\n-------------------------\nPress ENTER to continue // Press P to pause game >>\n\n").lower()
+        if inp == "pause" or inp == "p":
             pause_menu()
         if count != route_length:
             print(f"Here is a clue to your next destination: ")
@@ -386,8 +380,8 @@ def ask_task(task, option_a, option_b, option_c, correct_answer,):
         print("Incorrect")
         print(f"Oh no, you lost {25*mult} points! ")
         print(f"Your points: {points}")
-        inp = input("Press enter to continue or write pause or p to pause")
-        if inp == "pause".lower() or inp == "p".lower():
+        inp = input(f"\n-------------------------\nPress ENTER to continue // Press P to pause game >> \n\n").lower()
+        if inp == "pause" or inp == "p":
             pause_menu()
         print(f"Here is a clue to your next destination: ")
 
